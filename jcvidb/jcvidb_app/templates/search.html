@@ -1,0 +1,57 @@
+{% extends "./common/header.html" %}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #9cd7ff;
+   color: #af1b1b;
+   text-align: center;
+    height:100px;
+}
+</style>
+</head>
+
+{% block content %}
+
+<h2>Search Results for {{ search_query }}</h2>
+<table class="table" style="margin: 20px;">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">PGAN</th>
+      <th scope="col">Essentiality</th>
+      <th scope="col">Transporters</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+    {% for x in results %}
+      <tr>
+      <td>{{ x.id }} </a></td>
+        <td><a href="../details/{{ x.id }}">{{ x.PGAN }}  </a></td>
+        <td>{{ x.essentiality }}   </td>
+         <td>{{ x.Transporters }}</td>
+          </tr>
+    {% endfor %}
+
+  </tr>
+  </tbody>
+</table>
+
+
+
+<div class="footer"  >
+
+</div>
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+{% bootstrap_javascript %}
+{% load bootstrap_icons %}
+    <meta charset="UTF-8">
+    <title>JCVIDB</title>
+</head>
+
+
+<body>
+
+<div class="row" style="background: #9cd7ff">
+  <div class="col-sm-6"  style="padding: 50px;">
+    <div class="text-left" style="background: #9cd7ff">
+      <h1 style="color:white" class="display-3">JCVIDB</h1>
+    </div>
+  </div>
+  <div class="col-sm-6 row" style="padding-top: 100px;">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-8">
+          <form class="form-inline" method="get"  action=  '/search/'   >
+            {% csrf_token %}
+      <div class="form-group row" style="width: 50%;">
+        <input type="text" class="form-control" id="PGAN" name="PGAN_name">
+      </div>
+      <button type="submit" class="btn btn-light">
+        <i class="fas fa-search">search </i>
+      </button>
+    </form>
+
+    </div>
+  </div>
+</div>
+
+
+{% block content %}
+{% endblock %}
+</body>
+
+</html>
