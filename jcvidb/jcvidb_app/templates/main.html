@@ -2,17 +2,32 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-.footer {
-   position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   background-color: #9cd7ff;
-   color: #af1b1b;
-   text-align: center;
-    height:100px;
-}
-</style>
+    .footer {
+       position: fixed;
+       left: 0;
+       bottom: 0;
+       width: 100%;
+       background-color: #9cd7ff;
+       color: #af1b1b;
+       text-align: center;
+        height:100px;
+    }
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px; /* Adjust margin as needed */
+    }
+
+    .pagination {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .pagination li {
+        display: inline;
+        margin-right: 5px; /* Adjust spacing between pagination links */
+    }
+    </style>
 </head>
 
 {% block content %}
@@ -30,7 +45,7 @@
   <tbody>
 
 
-    {% for x in prot_data %}
+    {% for x in aProteomics_data %}
       <tr>
       <td>{{ x.id }} </a></td>
         <td><a href="details/{{ x.id }}">{{ x.PGAN }}  </a></td>
@@ -44,12 +59,32 @@
 </table>
 
 
+<div class="pagination-container col-sm-12" style="margin-left:40%;" >
+    <div class="pagination">
+    <span class="step-links">
+        {% if  aProteomics_data.has_previous %}
+            <a href="?page=1">&laquo; </a>
+            <a href="?page={{ aProteomics_data.previous_page_number }}"> &#8249; prev </a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ aProteomics_data.number }} of {{ aProteomics_data.paginator.num_pages }}.
+        </span>
+
+        {% if aProteomics_data.has_next %}
+            <a href="?page={{ aProteomics_data.next_page_number }}">next &#8250;</a>
+            <a href="?page={{ aProteomics_data.paginator.num_pages }}"> &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+</div>
+
+
 
 <div class="footer"  >
 
 </div>
 {% endblock %}
-
 
 
 
