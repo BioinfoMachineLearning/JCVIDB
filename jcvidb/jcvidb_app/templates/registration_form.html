@@ -75,12 +75,12 @@
          if (password.value!== confirmPassword.value) {
             document.getElementById("confirmPasswordError").innerText = "Passwords do not match";
             isValid = false;
-            console.log("different values")
+            // console.log("different values")
         }else {
              document.getElementById("confirmPasswordError").innerText = "";
              isValid =true
         }
-        console.log(isValid)
+        // console.log(isValid)
         if (!isValid) {
             document.getElementById("confirmPasswordError").innerText = "Passwords do not match";
             return false;
