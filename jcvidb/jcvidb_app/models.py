@@ -29,10 +29,11 @@ class Proteomic(models.Model):
     PGAN = models.CharField(max_length=255, null=True, blank=True)
     locusTag = models.CharField(max_length=255, null=True, blank=True)
 
-    createdBy = models.ForeignKey(User, on_delete=models.CASCADE)
+    createdBy = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     essentiality = models.CharField(max_length=255)
     transporters = models.CharField(max_length=255, null=True, blank=True)
     coverage = models.IntegerField(null=True, blank=True)
+    approved = models.IntegerField(null=True, blank=True,default=0)
 
     attachment = models.FileField(null=True, blank=True)
     originalName = models.CharField(max_length=255, null=True, blank=True)

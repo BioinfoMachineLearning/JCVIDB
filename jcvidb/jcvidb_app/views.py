@@ -1,9 +1,11 @@
 # from django.core.checks import messages
+import os
 import time
 from django.contrib.auth.hashers import check_password
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
+import shortuuid
 
 # Create your views here.
 from django.shortcuts import render
@@ -11,11 +13,18 @@ from django.http import HttpResponse
 from django.template import loader
 from .models import User, Proteomic, Role
 from .details_form import DetailsForm
+from .protpost_form import ProtPostForm
 from .registration_form import RegistrationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.hashers import make_password
 
-
+def handle_uploaded_file(uploaded_file):
+    upload_dir = 'uploads/'
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+    with open(os.path.join(upload_dir, uploaded_file.name), 'wb+') as destination:
+        for chunk in uploaded_file.chunks():
+            destination.write(chunk)
 def main(request):
     try:
         if request.session['user_id'] and request.session['last_name']:
@@ -163,3 +172,23 @@ def sign_out(request):
     redirect('../')
     print('redirecting')
     return render(request, 'sign_in.html', context=None)
+
+
+def prot_post(request):
+    if request.method == 'POST':
+        form = ProtPostForm(request.POST,request.FILES)
+        if form.is_valid():
+            uploaded_file = request.FILES['attachment']
+            handle_uploaded_file(uploaded_file)
+            form.save(sessionid=request.session['user_id'])
+            messages.success(request, 'Form submitted successfully!')
+            form = ProtPostForm()
+            return redirect('../')
+        else:
+            form = ProtPostForm(form)
+            messages.error(request, 'Form is invalid!')
+            return render(request, 'prot_postform.html', {'form': form})
+    else:
+        form = ProtPostForm()
+        return render(request, 'prot_postform.html', {'form': form})
+

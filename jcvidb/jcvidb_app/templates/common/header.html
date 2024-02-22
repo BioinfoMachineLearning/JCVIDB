@@ -21,7 +21,7 @@
   </div>
   <div class="col-sm-6 row" style="padding-top: 1px;">
 
-{% if not login_context %}
+{% if not login_context.id  %}
 <div class="container">
   <div class="row justify-content-end">
     <div class="col-auto">
@@ -40,14 +40,14 @@
   </div>
 </div>
 {% else %}
-    <h2> {{ login_context.id }} {{ login_context.last_name }}</h2>
+<!--    <h2> {{ login_context.id }} {{ login_context.last_name }}</h2>-->
 <div class="container">
   <div class="row justify-content-end">
     <div class="col-auto">
       <div class="push-right">
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-            {{ last_name }}<span class="caret"></span>
+            {{ login_context.last_name  }}<span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
             <li><a href="/profile">profile</a></li>
@@ -80,8 +80,8 @@
   </div>
 </div>
 
-<div class="col-sm-12">
-  {% block content %}
+<div class="col-sm-12">{% block content %}
+
 {% endblock %}
 
 </div>
