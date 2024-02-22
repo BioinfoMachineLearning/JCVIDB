@@ -1,0 +1,92 @@
+{% extends "./common/header.html" %}
+
+{% block content %}
+
+
+<h1 class="text-center"  >User Registration</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" class="form-container" onsubmit="return validateForm()" >
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_firstname">First Name:</label>
+                            <input type="text" class="form-control" id="id_firstname" name="firstname" required>
+                            <span id="firstnameError" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_lastname">Last Name:</label>
+                            <input type="text" class="form-control" id="id_lastname" name="lastname"required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_email">Email:</label><br>
+                            <input type="email" id="id_email"  class="form-control"  name="email" value="example@mail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_password">Password:</label><br>
+                            <input type="password" id="id_password" class="form-control" name="password" required><br>
+                            <span id="passwordError" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_password_confirm">Retype Password:</label><br>
+                            <input type="password" class="form-control" id="id_password_confirm" name="password_confirm" required><br>
+                        <span id="confirmPasswordError" class="text-danger"></span>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_phone">Phone:</label><br>
+                            <input class="form-control" type="text" id="id_phone" name="phone" required><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_occupation">Occupation:</label><br>
+                            <input class="form-control" type="text" id="id_occupation" name="occupation" required><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_instituation">Instituation:</label><br>
+                            <input class="form-control" type="text" id="id_instituation" name="instituation" required><br>
+                        </div>
+                        <button type="submit" id="submitButton" class="btn btn-primary">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<body>
+<script>
+    var password = document.getElementById("id_password");
+    var confirmPassword = document.getElementById("id_password_confirm");
+    var isValid = false;
+
+    function validateForm() {
+         if (password.value!== confirmPassword.value) {
+            document.getElementById("confirmPasswordError").innerText = "Passwords do not match";
+            isValid = false;
+            console.log("different values")
+        }else {
+             document.getElementById("confirmPasswordError").innerText = "";
+             isValid =true
+        }
+        console.log(isValid)
+        if (!isValid) {
+            document.getElementById("confirmPasswordError").innerText = "Passwords do not match";
+            return false;
+        }
+        else {
+            document.getElementById("confirmPasswordError").innerText = "";
+            return true
+        }
+    }
+     function toggleSubmitButton(_value) {
+        submitButton.disabled = !validateForm();
+     }
+     password.addEventListener("keyup", toggleSubmitButton);
+     confirmPassword.addEventListener("keyup", toggleSubmitButton);
+</script>
+{% endblock %}

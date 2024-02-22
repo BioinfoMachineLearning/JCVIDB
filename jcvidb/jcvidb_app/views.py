@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.core.checks import messages
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.shortcuts import render
@@ -6,6 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from .models import User, Proteomic, Role
 from .details_form import DetailsForm
+from .registration_form import RegistrationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -79,5 +81,22 @@ def search(request):
     return render(request, 'search.html', {'results': results, 'search_query': name})
 
 
+def create_User(request):
+    print("here1")
+    if request.method == 'POST':
+        print("here")
+        form = RegistrationForm(request.POST )
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Form submitted successfully!')
 
-    # return render(request, 'search.html', {'results': results, 'search_query': name})
+            return redirect('')
+        else:
+            print(form.errors)
+            form = RegistrationForm(form)
+
+            return render(request, 'registration_form.html', {'form': form})
+    else:
+        form = RegistrationForm()
+        return render(request, 'registration_form.html', {'form': form})
+
