@@ -21,6 +21,7 @@
   </div>
   <div class="col-sm-6 row" style="padding-top: 1px;">
 
+{% if not login_context %}
 <div class="container">
   <div class="row justify-content-end">
     <div class="col-auto">
@@ -38,8 +39,30 @@
     </div>
   </div>
 </div>
+{% else %}
+    <h2> {{ login_context.id }} {{ login_context.last_name }}</h2>
+<div class="container">
+  <div class="row justify-content-end">
+    <div class="col-auto">
+      <div class="push-right">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+            {{ last_name }}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="/profile">profile</a></li>
+            <li><a href="/post_data">post</a></li>
 
-    <div class="container">
+            <li><a href="/sign_out">sign out</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="container">
 
     <div class="row justify-content-end">
           <form class="form-inline" method="get"  action=  '/search/'   >

@@ -17,7 +17,19 @@ from django.contrib.auth.hashers import make_password
 
 
 def main(request):
+    try:
+        if request.session['user_id'] and request.session['last_name']:
+            print("here")
+            print(request.session['user_id'])
+            print(request.session['last_name'])
+            login_context = {"id": request.session['user_id'],
+                             "last_name": request.session['last_name']}
+    except :
+        login_context=None
+        print("no session found")
+    print(request)
     if request != "POST":
+
         aProteomics_data_list = Proteomic.objects.all().values()
         paginator = Paginator(aProteomics_data_list, 5)
         page_number = request.GET.get('page')
@@ -29,8 +41,8 @@ def main(request):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             aProteomics_data = paginator.page(paginator.num_pages)
-        print(page_number)
-        return render(request, 'main.html', {'aProteomics_data': aProteomics_data})
+
+        return render(request, 'main.html', {'aProteomics_data': aProteomics_data, 'login_context': login_context})
 
 
 def details(request, id):
@@ -96,10 +108,11 @@ def sign_in(request):
     if 'user_id' in request.session:
         del request.session['user_id']
         del request.session['last_name']
-
+    login_context = {}
     if request.method == 'POST':
         # print(request.method)
         # Retrieve form data
+
         email = request.POST.get('email')
         # print(email)
         password = request.POST.get('password')
@@ -116,7 +129,7 @@ def sign_in(request):
         #     print(hashed_password )
         #     print( login_details.password)
 
-        if email == login_details.email and check_password( password,login_details.password):
+        if email == login_details.email and check_password(password, login_details.password):
             # Set session ID
             print("success")
             request.session['user_id'] = login_details.id  # Assuming user ID is 1
@@ -124,8 +137,13 @@ def sign_in(request):
             # Redirect to a new page (or render response)
             print(request.session['user_id'])
             print(request.session['last_name'])
-            return redirect(
-                '../')  # Assuming 'dashboard' is the name of the URL pattern for the dashboard page
+
+            login_context = {"id": request.session['user_id'],
+                             "last_name": request.session['last_name']}
+
+            print("success")
+
+            return redirect('../')  # Assuming 'dashboard' is the name of the URL pattern for the dashboard page
         else:
             # Display error message (optional)
             messages.error(request, 'Invalid username or password')
@@ -135,4 +153,13 @@ def sign_in(request):
     # except Exception as e:
     #     print("session variables no set")
     # Render the login form template
-    return render(request, 'sign_in.html')
+    return render(request, 'sign_in.html', context=login_context)
+
+
+def sign_out(request):
+    if 'user_id' in request.session:
+        del request.session['user_id']
+        del request.session['last_name']
+    redirect('../')
+    print('redirecting')
+    return render(request, 'sign_in.html', context=None)
