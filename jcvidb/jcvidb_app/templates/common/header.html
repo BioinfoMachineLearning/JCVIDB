@@ -19,19 +19,40 @@
       <h1 style="color:white" class="display-3">JCVIDB</h1>
     </div>
   </div>
-  <div class="col-sm-6 row" style="padding-top: 100px;">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-8">
+  <div class="col-sm-6 row" style="padding-top: 1px;">
+
+<div class="container">
+  <div class="row justify-content-end">
+    <div class="col-auto">
+      <div class="push-right">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+            Sign-in/up <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="./sign_in">Sign-in</a></li>
+            <li><a href="./registration">Sign-up</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+
+    <div class="row justify-content-end">
           <form class="form-inline" method="get"  action=  '/search/'   >
 
-      <div class="form-group row" style="width: 50%;">
+      <div class="form-group row" style="margin:10px;">
         <input type="text" class="form-control" id="PGAN" name="PGAN_name">
       </div>
-      <button type="submit" class="btn btn-light">
+      <button type="submit" class="btn btn-light" style="margin: 10px;">
         <i class="fas fa-search">search </i>
       </button>
     </form>
 
+    </div>
     </div>
   </div>
 </div>
