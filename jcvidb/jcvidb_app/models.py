@@ -12,7 +12,7 @@ class Role(models.Model):
 class User(models.Model):
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    email = models.CharField(max_length=255,unique=True)
     password = models.CharField(max_length=255)
     phone = models.CharField(max_length=255, null=True, blank=True)
     occupation = models.CharField(max_length=255)
@@ -21,7 +21,7 @@ class User(models.Model):
     creationDate = models.DateField(null=True, blank=True)
     # by default it is 1 which is soft delete, 1 means requires approval and 2 is ok
     approve = models.IntegerField(null=True, blank=True, default=0)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE,default=1)
 
 
 class Proteomic(models.Model):

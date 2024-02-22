@@ -1,7 +1,15 @@
 {% extends "./common/header.html" %}
 
 {% block content %}
+{% for msg in messages %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Failed!!</strong>   {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
+{% endfor %}
 
 <h1 class="text-center"  >User Registration</h1>
 <div class="container">
@@ -39,7 +47,7 @@
 
                         <div class="form-group">
                             <label for="id_phone">Phone:</label><br>
-                            <input class="form-control" type="text" id="id_phone" name="phone" required><br>
+                            <input class="form-control" type="tel" placeholder="573-xxx-xxxx" id="id_phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phone" required><br>
                         </div>
                         <div class="form-group">
                             <label for="id_occupation">Occupation:</label><br>
@@ -56,8 +64,6 @@
         </div>
     </div>
 </div>
-
-
 <body>
 <script>
     var password = document.getElementById("id_password");

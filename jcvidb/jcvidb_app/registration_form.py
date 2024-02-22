@@ -7,17 +7,15 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['firstname', 'lastname', 'email', 'password', 'phone', 'occupation', 'instituation', 'role']
+        fields = ['firstname', 'lastname', 'email', 'password', 'phone', 'occupation', 'instituation']
 
 
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
-        print(password)
+
+
         password_confirm = cleaned_data.get("password_confirm")
-        print(password_confirm)
-
-
         # Check if the passwords match
         if password and password_confirm and password != password_confirm:
             raise forms.ValidationError("Passwords do not match")

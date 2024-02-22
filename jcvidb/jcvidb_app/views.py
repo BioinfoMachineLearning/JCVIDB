@@ -1,5 +1,8 @@
-from django.core.checks import messages
+# from django.core.checks import messages
+import time
+
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 # Create your views here.
 from django.shortcuts import render
@@ -9,8 +12,7 @@ from .models import User, Proteomic, Role
 from .details_form import DetailsForm
 from .registration_form import RegistrationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-
+from django.contrib.auth.hashers import make_password
 def main(request):
     if request != "POST":
 
@@ -82,19 +84,23 @@ def search(request):
 
 
 def create_User(request):
-    print("here1")
     if request.method == 'POST':
         print("here")
         form = RegistrationForm(request.POST )
+        print(form)
         if form.is_valid():
+            password = form.cleaned_data['password']
+            hashed_password = make_password(password)
+            form.instance.password = hashed_password
             form.save()
             messages.success(request, 'Form submitted successfully!')
-
-            return redirect('')
+            # time.sleep(2)
+            form=RegistrationForm()
+            return redirect('../')
         else:
             print(form.errors)
             form = RegistrationForm(form)
-
+            messages.error(request, 'Form is invalid!')
             return render(request, 'registration_form.html', {'form': form})
     else:
         form = RegistrationForm()
