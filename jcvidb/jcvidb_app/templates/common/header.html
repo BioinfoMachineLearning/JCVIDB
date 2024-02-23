@@ -52,8 +52,16 @@
           <ul class="dropdown-menu">
             <li><a href="/profile">profile</a></li>
             <li><a href="/post_data">post</a></li>
-
             <li><a href="/sign_out">sign out</a></li>
+
+             {% if login_context.admin  %}
+            <hr>
+            <li>Admin</li>
+            <hr>
+            <li><a href="/approve_post">Approve Post</a></li>
+            <li><a href="">Make Admin</a></li>
+
+            {% endif %}
           </ul>
         </div>
       </div>
@@ -61,6 +69,7 @@
   </div>
 </div>
 {% endif %}
+
 
 <div class="container">
 

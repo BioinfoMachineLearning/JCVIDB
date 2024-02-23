@@ -21,7 +21,7 @@ class User(models.Model):
     creationDate = models.DateField(null=True, blank=True)
     # by default it is 1 which is soft delete, 1 means requires approval and 2 is ok
     approve = models.IntegerField(null=True, blank=True, default=0)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE,default=1)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE,default=3)
 
 
 class Proteomic(models.Model):
