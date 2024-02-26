@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db import models
 
+from datetime import date
 
 class Role(models.Model):
     name = models.CharField(max_length=255)
@@ -37,4 +38,4 @@ class Proteomic(models.Model):
 
     attachment = models.FileField(null=True, blank=True)
     originalName = models.CharField(max_length=255, null=True, blank=True)
-    creationDate = models.DateField(null=True, blank=True)
+    creationDate = models.DateField(null=True, blank=True,default=date.today)

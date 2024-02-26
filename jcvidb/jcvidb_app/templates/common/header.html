@@ -44,10 +44,10 @@
 <div class="container">
   <div class="row justify-content-end">
     <div class="col-auto">
-      <div class="push-right">
+      <div >
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-            {{ login_context.last_name  }}<span class="caret"></span>
+            {{ login_context.last_name}}<span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
             <li><a href="/profile">profile</a></li>
@@ -55,11 +55,10 @@
             <li><a href="/sign_out">sign out</a></li>
 
              {% if login_context.admin  %}
-            <hr>
+
             <li>Admin</li>
-            <hr>
             <li><a href="/approve_post">Approve Post</a></li>
-            <li><a href="">Make Admin</a></li>
+<!--            <li><a href="">Make Admin</a></li>-->
 
             {% endif %}
           </ul>

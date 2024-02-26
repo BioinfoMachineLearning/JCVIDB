@@ -7,7 +7,7 @@ class ProtUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Proteomic
-        fields = ['id', 'freeGeneSet','createdBy', 'essentiality', 'PGAN', 'locusTag', 'attachment']
+        fields = ['id', 'freeGeneSet','createdBy', 'essentiality', 'PGAN', 'coverage','locusTag', 'attachment']
 
     def clean(self):
         cleaned_data = super().clean()

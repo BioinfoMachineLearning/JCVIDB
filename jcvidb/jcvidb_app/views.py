@@ -14,7 +14,7 @@ from .protpost_form import ProtPostForm
 from .protupdate_form import ProtUpdateForm
 from .registration_form import RegistrationForm
 
-UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb'
+UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/media/'
 
 from django.http import HttpResponseNotFound, FileResponse
 import os
@@ -80,7 +80,7 @@ def main(request):
     if request != "POST":
 
         aProteomics_data_list =   Proteomic.objects.filter(approved=1)
-        paginator = Paginator(aProteomics_data_list, 5)
+        paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
             aProteomics_data = paginator.page(page_number)
@@ -110,10 +110,11 @@ def search(request):
     login_details = set_session_values(request)
     name = request.GET.get('PGAN_name', '')
     results_list = Proteomic.objects.filter(PGAN__icontains=name)
+    results_list =results_list.filter(approved=1)
     print(len(results_list))
 
     page_number = request.GET.get('page')
-    paginator = Paginator(results_list, 5)
+    paginator = Paginator(results_list, 10)
 
     if page_number is None:
         page_number = 1
@@ -220,6 +221,7 @@ def prot_post(request):
                     form = ProtPostForm(form)
                     messages.error(request, 'Form is invalid!')
                     return render(request, 'prot_postform.html', {'form': form, 'login_context': login_details})
+                print(form.cleaned_data['locusTag'])
                 form.save(sessionid=request.session['user_id'])
                 messages.success(request, 'Form submitted successfully!')
                 form = ProtPostForm()
@@ -241,7 +243,7 @@ def appprove_post(request):
 
     if request != "POST":
         aProteomics_data_list = Proteomic.objects.filter(approved=0)
-        paginator = Paginator(aProteomics_data_list, 5)
+        paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
             aProteomics_data = paginator.page(page_number)
@@ -264,9 +266,15 @@ def update_prot(request, id):
         if request.method == 'GET':
             item = Proteomic.objects.get(id=id)
             form = ProtUpdateForm(instance=item)
-            item.approved =1
+            return render(request, 'update_prot.html',
+                      {'prot_data': item, 'login_context': login_details})
+
+        else:
+            item = Proteomic.objects.get(id=id)
+            form = ProtUpdateForm(instance=item)
+            item.approved = 1
             item.save()
-            return render(request, 'update_prot.html', {'prot_data': item, 'login_context': login_details,'upload_dir':UPLOAD_DIR})
+            return redirect('../approve_post')
 
             # ProtUpdateForm.cleaned_data['PGAN']=item.PGAN
 
