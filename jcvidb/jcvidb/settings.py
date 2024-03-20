@@ -87,7 +87,7 @@ WSGI_APPLICATION = "jcvidb.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'jcvidb',
+        'NAME': 'jcvidb2',
         'USER': 'royc487',
         'PASSWORD': 'password',
         'HOST': 'localhost',   # or your PostgreSQL server's IP address

@@ -1,13 +1,13 @@
 # forms.py
 from django import forms
-from .models import Proteomic, User
+from .models import Basic_data, User
 
 
-class ProtPostForm(forms.ModelForm):
+class DataPostForm(forms.ModelForm):
 
     class Meta:
-        model = Proteomic
-        fields = ['id', 'freeGeneSet','createdBy', 'essentiality', 'PGAN', 'locusTag','coverage' ,'attachment']
+        model = Basic_data
+        fields = ['id','createdBy', 'references',  'details' ,'funding', 'type','attachment']
 
     def clean(self):
         cleaned_data = super().clean()

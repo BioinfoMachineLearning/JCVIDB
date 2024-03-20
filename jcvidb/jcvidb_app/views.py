@@ -9,12 +9,12 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import loader
 
-from .models import User, Proteomic
-from .protpost_form import ProtPostForm
+from .models import User, Basic_data
+from .datapost_form import DataPostForm
 from .protupdate_form import ProtUpdateForm
 from .registration_form import RegistrationForm
 
-UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/media/'
+UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 
 from django.http import HttpResponseNotFound, FileResponse
 import os
@@ -57,9 +57,11 @@ def set_session_values(request):
 
 
 def handle_uploaded_file(uploaded_file):
+    print('handle_uploaded_file')
     if not os.path.exists(UPLOAD_DIR):
         os.makedirs(UPLOAD_DIR)
     with open(os.path.join(UPLOAD_DIR, uploaded_file.name), 'wb+') as destination:
+        print('file uploaded')
         for chunk in uploaded_file.chunks():
             destination.write(chunk)
 
@@ -79,7 +81,7 @@ def main(request):
     print(request)
     if request != "POST":
 
-        aProteomics_data_list =   Proteomic.objects.filter(approved=1)
+        aProteomics_data_list =   Basic_data.objects.filter(approved=1)
         paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
@@ -96,7 +98,7 @@ def main(request):
 
 def details(request, id):
     login_context = set_session_values(request)
-    aProteomics_data = Proteomic.objects.get(id=id)
+    aProteomics_data = Basic_data.objects.get(id=id)
     print(aProteomics_data.id)
     template = loader.get_template('details.html')
     context = {
@@ -109,7 +111,7 @@ def details(request, id):
 def search(request):
     login_details = set_session_values(request)
     name = request.GET.get('PGAN_name', '')
-    results_list = Proteomic.objects.filter(PGAN__icontains=name)
+    results_list = Basic_data.objects.filter(PGAN__icontains=name)
     results_list =results_list.filter(approved=1)
     print(len(results_list))
 
@@ -212,27 +214,26 @@ def prot_post(request):
     login_details = set_session_values(request)
     if login_details != None:
         if request.method == 'POST':
-            form = ProtPostForm(request.POST, request.FILES)
+            form = DataPostForm(request.POST, request.FILES)
             if form.is_valid():
                 try:
                     uploaded_file = request.FILES['attachment']
-                    handle_uploaded_file(uploaded_file)
+                    # handle_uploaded_file(uploaded_file)
                 except:
-                    form = ProtPostForm(form)
+                    form = DataPostForm(form)
                     messages.error(request, 'Form is invalid!')
-                    return render(request, 'prot_postform.html', {'form': form, 'login_context': login_details})
-                print(form.cleaned_data['locusTag'])
+                    return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
                 form.save(sessionid=request.session['user_id'])
                 messages.success(request, 'Form submitted successfully!')
-                form = ProtPostForm()
+                form = DataPostForm()
                 return redirect('../')
             else:
-                form = ProtPostForm(form)
+                form = DataPostForm(form)
                 messages.error(request, 'Form is invalid!')
-                return render(request, 'prot_postform.html', {'form': form, 'login_context': login_details})
+                return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
         else:
-            form = ProtPostForm()
-            return render(request, 'prot_postform.html', {'form': form, 'login_context': login_details})
+            form = DataPostForm()
+            return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
     else:
         redirect('./')
         return render(request, 'main.html')
@@ -242,7 +243,7 @@ def appprove_post(request):
     login_context = set_session_values(request)
 
     if request != "POST":
-        aProteomics_data_list = Proteomic.objects.filter(approved=0)
+        aProteomics_data_list = Basic_data.objects.filter(approved=0)
         paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
@@ -264,13 +265,13 @@ def update_prot(request, id):
     form = ProtUpdateForm()
     if login_details['admin'] == True:
         if request.method == 'GET':
-            item = Proteomic.objects.get(id=id)
+            item = Basic_data.objects.get(id=id)
             form = ProtUpdateForm(instance=item)
             return render(request, 'update_prot.html',
                       {'prot_data': item, 'login_context': login_details})
 
         else:
-            item = Proteomic.objects.get(id=id)
+            item = Basic_data.objects.get(id=id)
             form = ProtUpdateForm(instance=item)
             item.approved = 1
             item.save()

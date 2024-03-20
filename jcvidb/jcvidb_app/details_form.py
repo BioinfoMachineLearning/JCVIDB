@@ -1,14 +1,13 @@
 from django import forms
-from .models import Proteomic
+from .models import Basic_data
 
 
 class DetailsForm(forms.ModelForm):
     session_id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
-        model = Proteomic
-        fields = ['freeGeneSet', 'PGAN', 'locusTag', 'createdBy', 'essentiality', 'transporters', 'coverage',
-                  'attachment', 'creationDate']
+        model = Basic_data
+        fields = ['id','createdBy', 'references',  'details' ,'funding', 'type','attachment']
 
 # def save(self, sessionid=None, commit=True):
 #      instance = super().save(commit=False)

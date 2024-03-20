@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Proteomic
+from .models import Basic_data
 
 
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Proteomic
-        fields = ('freeGeneSet', 'PGAN', 'locusTag', 'createdBy', 'essentiality', 'transporters', 'coverage',
-                  'attachment', 'creationDate')
+        model = Basic_data
+        fields = ('funding',  'details', 'type','references',
+                  'attachment', 'creationDate','type')

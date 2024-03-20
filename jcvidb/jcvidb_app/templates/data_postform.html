@@ -21,28 +21,30 @@
                     <form method="post" class="form-container" enctype="multipart/form-data"  >
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="id_freeGeneSet">Free Gene Set</label>
-                            <input type="text" class="form-control" id="id_freeGeneSet" name="freeGeneSet" required>
+                            <label for="id_details">Details</label>
+                            <textarea   class="form-control" id="id_details" name="details" required></textarea>
 
                         </div>
                         <div class="form-group">
-                            <label for="id_essentiality">Essentiality</label>
-                            <input type="text" class="form-control" id="id_essentiality" name="essentiality"required>
+                            <label for="id_references">Reference</label>
+                            <textarea type="text" class="form-control" id="id_references" name="references"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="id_coverage">Coverage:</label><br>
-                            <input type="number" id="id_coverage"  class="form-control"  name="coverage"  required>
+                            <label for="id_funding">Funding:</label><br>
+                            <textarea type="number" id="id_funding"  class="form-control"  name="funding" ></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="id_PGAN">Protein Genbank Accession number:</label><br>
-                            <input type="text" id="id_PGAN" class="form-control" name="PGAN" required><br>
+                            <label for="id_type">Protein Genbank Accession number:</label><br>
+                               <select id="id_type" name="type">
+                                    <option value="1">Proteomics</option>
+                                    <option value="2">Trans-proteomics</option>
+                                    <option value="3">Interactomes</option>
+                                    <option value="4">Physical-Properties</option>
+                                </select>
                         </div>
 
-                        <div class="form-group">
-                            <label for="id_locusTag">Locus Tag:</label><br>
-                            <input class="form-control" type="text"   id="id_locusTag"   name="locusTag" required><br>
-                        </div>
+
                         <div class="form-group">
                             <label for="id_attachment">attachment:</label><br>
                              <input class="form-control" type="file" id="id_attachment" name="attachment" required>
