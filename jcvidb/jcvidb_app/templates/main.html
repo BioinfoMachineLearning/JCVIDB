@@ -40,33 +40,36 @@
 </div>
 
 {% endfor %}
-<table class="table" style="margin: 20px;">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Details</th>
-      <th scope="col">Type</th>
-    </tr>
-  </thead>
+<div class="row">
+    <table class="table" style="margin: 20px;">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Details</th>
+          <th scope="col">Type</th>
+        </tr>
+      </thead>
   <tbody>
 
 
     {% for x in aProteomics_data %}
-      <tr>
+    <tr>
           <td><a href="details/{{ x.id }}">{{ x.id }}</a></td>
           <td><textarea rows="5" cols="30" readonly style="border:0px;">{{ x.details }}</textarea> </td>
           <td>{{ x.type.name }}</td>
           </tr>
     {% endfor %}
-
-  </tr>
+    </tr>
   </tbody>
 </table>
 
 
-<div class="pagination-container col-sm-12" style="margin-left:40%;" >
-    <div class="pagination">
-    <span class="step-links">
+</div>
+
+
+<div class="pagination-container col-sm-12"  >
+     <div class="text-center">
+          <span class="step-links">
         {% if  aProteomics_data.has_previous %}
             <a href="?page=1">&laquo; </a>
             <a href="?page={{ aProteomics_data.previous_page_number }}"> &#8249; prev </a>
@@ -81,14 +84,30 @@
             <a href="?page={{ aProteomics_data.paginator.num_pages }}"> &raquo;</a>
         {% endif %}
     </span>
+
+    </div>
+<!--    <div class="pagination">-->
+<!--    <span class="step-links">-->
+<!--        {% if  aProteomics_data.has_previous %}-->
+<!--            <a href="?page=1">&laquo; </a>-->
+<!--            <a href="?page={{ aProteomics_data.previous_page_number }}"> &#8249; prev </a>-->
+<!--        {% endif %}-->
+
+<!--        <span class="current">-->
+<!--            Page {{ aProteomics_data.number }} of {{ aProteomics_data.paginator.num_pages }}.-->
+<!--        </span>-->
+
+<!--        {% if aProteomics_data.has_next %}-->
+<!--            <a href="?page={{ aProteomics_data.next_page_number }}">next &#8250;</a>-->
+<!--            <a href="?page={{ aProteomics_data.paginator.num_pages }}"> &raquo;</a>-->
+<!--        {% endif %}-->
+<!--    </span>-->
+<!--</div>-->
 </div>
-</div>
 
 
 
-<div class="footer"  >
 
-</div>
 {% endblock %}
 
 
