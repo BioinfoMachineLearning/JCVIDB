@@ -42,23 +42,21 @@
 {% endfor %}
 <table class="table" style="margin: 20px;">
   <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">PGAN</th>
-      <th scope="col">Essentiality</th>
-      <th scope="col">Transporters</th>
-    </tr>
+      <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Details</th>
+          <th scope="col" >Type</th>
+      </tr>
   </thead>
   <tbody>
 
 
     {% for x in aProteomics_data %}
       <tr>
-      <td>{{ x.id }} </a></td>
-        <td><a href="../update_prot/{{ x.id }}">{{ x.PGAN }}  </a></td>
-        <td>{{ x.essentiality }}   </td>
-         <td>{{ x.Transporters }}</td>
-          </tr>
+          <td><a href="../update_prot/{{ x.id }}">{{ x.id }}</a></td>
+          <td><textarea rows="2" cols="40" readonly style="border:0px;width: 100%;"> {{ x.details }}</textarea> </td>
+          <td>{{ x.type.name }}</td>
+      </tr>
     {% endfor %}
 
   </tr>
@@ -66,9 +64,9 @@
 </table>
 
 
-<div class="pagination-container col-sm-12" style="margin-left:40%;" >
-    <div class="pagination">
-    <span class="step-links">
+<div class="pagination-container col-sm-12"   >
+     <div class="text-center">
+        <span class="step-links">
         {% if  aProteomics_data.has_previous %}
             <a href="?page=1">&laquo; </a>
             <a href="?page={{ aProteomics_data.previous_page_number }}"> &#8249; prev </a>
@@ -83,7 +81,7 @@
             <a href="?page={{ aProteomics_data.paginator.num_pages }}"> &raquo;</a>
         {% endif %}
     </span>
-</div>
+     </div>
 </div>
 
 
