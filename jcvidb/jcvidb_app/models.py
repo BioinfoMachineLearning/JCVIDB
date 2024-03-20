@@ -24,6 +24,9 @@ class User(models.Model):
     approve = models.IntegerField(null=True, blank=True, default=0)
     role = models.ForeignKey(Role, on_delete=models.CASCADE,default=3)
 
+class Data_type(models.Model):
+    name = models.CharField(max_length=255)
+    code= models.IntegerField(null=True, blank=True, default=0)
 
 class Proteomic(models.Model):
     freeGeneSet = models.CharField(max_length=255)
@@ -34,8 +37,12 @@ class Proteomic(models.Model):
     essentiality = models.CharField(max_length=255)
     transporters = models.CharField(max_length=255, null=True, blank=True)
     coverage = models.IntegerField(null=True, blank=True)
+    type=models.ForeignKey(Data_type, on_delete=models.CASCADE,null=True,blank=True)
     approved = models.IntegerField(null=True, blank=True,default=0)
 
     attachment = models.FileField(null=True, blank=True)
     originalName = models.CharField(max_length=255, null=True, blank=True)
     creationDate = models.DateField(null=True, blank=True,default=date.today)
+
+
+
