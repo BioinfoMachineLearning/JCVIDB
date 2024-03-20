@@ -44,9 +44,8 @@
   <thead>
     <tr>
       <th scope="col">ID</th>
-      <th scope="col">PGAN</th>
-      <th scope="col">Essentiality</th>
-      <th scope="col">Transporters</th>
+      <th scope="col">Details</th>
+      <th scope="col">Type</th>
     </tr>
   </thead>
   <tbody>
@@ -54,10 +53,9 @@
 
     {% for x in aProteomics_data %}
       <tr>
-      <td>{{ x.id }} </a></td>
-        <td><a href="details/{{ x.id }}">{{ x.PGAN }}  </a></td>
-        <td>{{ x.essentiality }}   </td>
-         <td>{{ x.Transporters }}</td>
+          <td><a href="details/{{ x.id }}">{{ x.id }}</a></td>
+          <td><textarea rows="5" cols="30" readonly style="border:0px;">{{ x.details }}</textarea> </td>
+          <td>{{ x.type.name }}</td>
           </tr>
     {% endfor %}
 

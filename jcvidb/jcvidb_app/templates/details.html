@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<div class="col-sm-12 ">
+<div class="col-sm-12 " >
     <div class="text-center">
             <h1 > Details</h1>
 
@@ -11,72 +11,51 @@
     <hr>
 
     <div class="container" style="margin: 5%;">
-        <form class="form-horizontal" ]>
+        <form class="form-horizontal" >
             <div class="form-group row">
-                <label class="control-label col-sm-2" for="email"><b>Free Gene Set:</b></label>
+                <label class="control-label col-sm-2" for="id_id"><b>ID</b></label>
                 <div class="col-sm-10">
-                    <label class="col-sm-10">{{prot_data.freeGeneSet}}</label>
+                    <label id="id_id" class="col-sm-10">{{prot_data.id}}</label>
                 </div>
             </div>
             <div class="form-group row">
-                <label class="control-label col-sm-2" for="pwd"><b>PGAN:</b></label>
+                <label class="control-label col-sm-2" for="id_details"><b>Details</b></label>
                 <div class="col-sm-10">
-                    <label class="col-sm-10">{{prot_data.PGAN}}</label>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="control-label col-sm-2" for="email"><b>Locus Tag:</b></label>
-                <div class="col-sm-10">
-                    <label class="col-sm-10">{{prot_data.locusTag}}</label>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="control-label col-sm-2" for="pwd"><b>Essentiality:</b></label>
-                <div class="col-sm-10">
-                    <label class="col-sm-10">{{prot_data.essentiality}}</label>
+                    <textarea class="col-sm-10" id="id_details" style="border: 0px;">{{prot_data.details}}</textarea>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="control-label col-sm-2" for="email"><b>Transporters:</b></label>
+                <label class="control-label col-sm-2" for="id_references"><b>References</b></label>
                 <div class="col-sm-10">
-                    <label class="col-sm-10">{{prot_data.transporters}}</label>
+                    <textarea id="id_references" class="col-sm-10" style="border: 0px;">{{prot_data.references}}</textarea>
                 </div>
             </div>
             <div class="form-group row">
-                <label class="control-label col-sm-2" for="pwd"><b>Coverage:</b></label>
+                <label class="control-label col-sm-2" for="id_funding"><b>Funding:</b></label>
                 <div class="col-sm-10">
-                    <label class="col-sm-10">{{prot_data.coverage}}</label>
+                    <textarea class="col-sm-10" id="id_funding" style="border: 0px;">{{prot_data.funding}}</textarea>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_cd"><b>Creation Date:</b></label>
+                <div class="col-sm-10">
+                    <label class="col-sm-10" id="id_cd">{{prot_data.creationDate}}</label>
                 </div>
             </div>
             <div class="form-group row">
-                <label class="control-label col-sm-2" for="email"><b>Creation Date:</b></label>
-                <div class="col-sm-10">
-                    <label class="col-sm-10">{{prot_data.creationDate}}</label>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="control-label col-sm-2" for="email"><b>Attachment</b></label>
+                <label class="control-label col-sm-2" for="id_attachment"><b>Attachment</b></label>
                 <div class="col-sm-10">
 
                     {% if prot_data.attachment %}
-                    <label class="col-sm-10" ><a href="{% url 'download_file' file_name=prot_data.attachment %}">  {{prot_data.attachment}}</a> </label>
+                    <label id ="id_attachment" class="col-sm-10" ><a href="{% url 'download_file' file_name=prot_data.attachment %}">  {{prot_data.attachment}}</a> </label>
                     {% else %}
                     <p>No file available for download.</p>
                     {% endif %}
                 </div>
             </div>
-
-<!--            {% if login_context.id and login_context.admin %}-->
-<!--            <div class="form-group row">-->
-<!--                <div class="col-sm-5">-->
-<!--                </div>-->
-<!--                <div class="col-sm-7">-->
-<!--                    <button type="submit" id="submitButton" class="btn btn-success">Approve</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            {% endif %}-->
 
         </form>
     </div>
