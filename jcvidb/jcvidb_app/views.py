@@ -216,18 +216,20 @@ def prot_post(request):
         if request.method == 'POST':
             form = DataPostForm(request.POST, request.FILES)
             if form.is_valid():
-                try:
-                    uploaded_file = request.FILES['attachment']
-                    # handle_uploaded_file(uploaded_file)
-                except:
-                    form = DataPostForm(form)
-                    messages.error(request, 'Form is invalid!')
-                    return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
-                form.save(sessionid=request.session['user_id'])
+                # try:
+                #     uploaded_file = request.FILES['attachment']
+                #     # handle_uploaded_file(uploaded_file)
+                # except:
+                #     form = DataPostForm(form)
+                #     messages.error(request, 'Form is invalid!')
+                #     return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
+
+                instance_object = form.save(sessionid=request.session['user_id']).id
                 messages.success(request, 'Form submitted successfully!')
                 form = DataPostForm()
-                return redirect('../')
+                return redirect('../file_upload/'+str(instance_object))
             else:
+                print(form.errors)
                 form = DataPostForm(form)
                 messages.error(request, 'Form is invalid!')
                 return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
@@ -281,3 +283,13 @@ def update_prot(request, id):
 
             # return redirect('./' + str(id))
         # return render(request, 'update_prot.html', {'form': form, 'login_context': login_details})
+
+def file_upload(request, context_id):
+    if request.method == 'GET':
+        print(context_id)
+        login_details = set_session_values(request)
+        print(login_details["id"])
+        return render(request, 'file_upload.html',
+                          { 'login_context': login_details})
+    elif request.method == 'POST':
+        return None

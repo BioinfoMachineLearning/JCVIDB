@@ -29,22 +29,23 @@ class Data_type(models.Model):
     code= models.CharField(max_length=3,null=True, blank=True, default=0)
 
 class Basic_data(models.Model):
-    # freeGeneSet = models.CharField(max_length=255)
-    # PGAN = models.CharField(max_length=255, null=True, blank=True)
-    # locusTag = models.CharField(max_length=255, null=True, blank=True)
     details = models.TextField(null=True, blank=True)
     references=models.TextField(null=True, blank=True)
     funding = models.TextField(null=True,blank=True)
     createdBy = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
-    # essentiality = models.CharField(max_length=255)
-    # transporters = models.CharField(max_length=255, null=True, blank=True)
-    # coverage = models.IntegerField(null=True, blank=True)
     type=models.ForeignKey(Data_type, on_delete=models.CASCADE,null=True,blank=True)
     approved = models.IntegerField(null=True, blank=True,default=0)
-
     attachment = models.FileField(null=True, blank=True)
-    # originalName = models.CharField(max_length=255, null=True, blank=True)
     creationDate = models.DateField(null=True, blank=True,default=date.today)
+
+class File_data(models.Model):
+    basic_data_id = models.ForeignKey(Basic_data, on_delete=models.CASCADE,null=True,blank=True)
+    attachment = models.FileField(null=True, blank=True)
+class column_data(models.Model):
+    file_data_id = models.ForeignKey(File_data, on_delete=models.CASCADE, null=True, blank=True)
+    col_index = models.IntegerField(null=True, blank=True,default=0)
+    sheet_index = models.IntegerField(null=True, blank=True,default=0)
+
 
 
 

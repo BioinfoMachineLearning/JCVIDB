@@ -12,5 +12,6 @@ urlpatterns = [
     path('post_data/', views.prot_post, name='post'),
     path('approve_post/', views.appprove_post, name='approve_post'),
     path('update_prot/<int:id>',views.update_prot, name='update_prot'),
+    path('file_upload/<int:id>', views.file_upload, name='file_upload'),
     path('download/<str:file_name>/', views.download_file, name='download_file')
 ]
