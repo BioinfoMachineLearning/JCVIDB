@@ -1,16 +1,18 @@
 # from django.core.checks import messages
+import pandas as pd
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 # Create your views here.
 from django.shortcuts import render
 from django.template import loader
+from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Basic_data
-from .datapost_form import DataPostForm
+from .models import User, Basic_data, column_data
+from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
 from .registration_form import RegistrationForm
 
@@ -19,6 +21,7 @@ UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 from django.http import HttpResponseNotFound, FileResponse
 import os
 from django.conf import settings
+
 
 def download_file(request, file_name):
     # Define the directory where the files are stored
@@ -81,7 +84,7 @@ def main(request):
     print(request)
     if request != "POST":
 
-        aProteomics_data_list =   Basic_data.objects.filter(approved=1)
+        aProteomics_data_list = Basic_data.objects.filter(approved=1)
         paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
@@ -112,7 +115,7 @@ def search(request):
     login_details = set_session_values(request)
     name = request.GET.get('PGAN_name', '')
     results_list = Basic_data.objects.filter(PGAN__icontains=name)
-    results_list =results_list.filter(approved=1)
+    results_list = results_list.filter(approved=1)
     print(len(results_list))
 
     page_number = request.GET.get('page')
@@ -227,7 +230,7 @@ def prot_post(request):
                 instance_object = form.save(sessionid=request.session['user_id']).id
                 messages.success(request, 'Form submitted successfully!')
                 form = DataPostForm()
-                return redirect('../file_upload/'+str(instance_object))
+                return redirect('../file_upload/' + str(instance_object))
             else:
                 print(form.errors)
                 form = DataPostForm(form)
@@ -270,7 +273,7 @@ def update_prot(request, id):
             item = Basic_data.objects.get(id=id)
             form = ProtUpdateForm(instance=item)
             return render(request, 'update_prot.html',
-                      {'prot_data': item, 'login_context': login_details})
+                          {'prot_data': item, 'login_context': login_details})
 
         else:
             item = Basic_data.objects.get(id=id)
@@ -284,12 +287,53 @@ def update_prot(request, id):
             # return redirect('./' + str(id))
         # return render(request, 'update_prot.html', {'form': form, 'login_context': login_details})
 
+
+@csrf_exempt
+def preview_csv(request):
+    # print(request.POST)
+    # print(request.FILES)
+    if request.method == 'POST' and request.FILES.get('attachment'):
+        # print(request.POST)
+        page = int(request.POST.get('sheet_index').strip()) - 1
+        # print(page)
+        col_head = int(request.POST.get('col_index').strip()) - 1
+        # print(col_head)
+        try:
+            csv_file = request.FILES['attachment']
+            df = pd.read_excel(csv_file, sheet_name=page, header=col_head)
+            final_array = df.columns.to_list()
+            print(final_array)
+            print(len(final_array))
+            return JsonResponse({'headers': final_array})
+        except:
+            return JsonResponse({'headers': []})
+    return JsonResponse({'headers': []})
+
+
 def file_upload(request, context_id):
     if request.method == 'GET':
         print(context_id)
         login_details = set_session_values(request)
         print(login_details["id"])
         return render(request, 'file_upload.html',
-                          { 'login_context': login_details})
+                      {'login_context': login_details})
     elif request.method == 'POST':
-        return None
+        post_data = request.POST
+        print(post_data.items)
+        for key, value in post_data.items():
+            print(f"{key}: {value}")
+        print('equest.method == POST')
+        print(request.POST.get('col_index'))
+        print(request.POST.get('checkbox'))
+
+        file_form = FileUploadPostForm(request.POST, request.FILES)
+
+        column_form = ColumnDataPostForm(request.POST)
+        if file_form.is_valid() and column_form.is_valid():
+            basic_data = Basic_data.objects.get(id=context_id)
+            print(column_form.cleaned_data['sheet_index'])
+            print(column_form.cleaned_data['col_index'])
+            print(column_form.cleaned_data['previewHeaders'])
+            print(request.POST)
+            print(file_form.cleaned_data['attachment'])
+            return None

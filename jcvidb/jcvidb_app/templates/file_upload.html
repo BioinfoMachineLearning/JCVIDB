@@ -11,52 +11,104 @@
 
 {% endfor %}
 
-<h1 class="text-center"  > File Upload</h1>
+<h1 class="text-center"  > File Upload </h1>
 <hr>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
                 <div class="card-body">
-                    <form method="post" class="form-container" enctype="multipart/form-data"  >
+                    <form method="post" id="file_upload_form" class="form-container" enctype="multipart/form-data"  >
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="id_details">Details</label>
-                            <textarea   class="form-control" id="id_details" name="details" required></textarea>
+                           <label for="attachment"><h1>Attachment:</h1></label><br>
+                             <input class="form-control" type="file" id="attachment" name="attachment" >
+                        </div>
+                        <br>
 
-                        </div>
-                        <div class="form-group">
-                            <label for="id_references">Reference</label>
-                            <textarea type="text" class="form-control" id="id_references" name="references"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="id_funding">Funding:</label><br>
-                            <textarea type="number" id="id_funding"  class="form-control"  name="funding" ></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="id_type">Protein Genbank Accession number:</label><br>
-                               <select id="id_type" name="type">
-                                    <option value="1">Proteomics</option>
-                                    <option value="2">Trans-proteomics</option>
-                                    <option value="3">Interactomes</option>
-                                    <option value="4">Physical-Properties</option>
-                                </select>
-                        </div>
+                        <br>
+                     <div>
+                           <h3> Add Column Informations (only for excel,csv or sheets) </h3>
+                           <input class="control" type="number" id="sheet_index" name="sheet_index">
+                           <input class="control" type="number" id="col_index" name ="col_index">
+                           <input type="buton" value="Preview Headers" class="btn btn-info" readonly onclick="handleFile(document.getElementById('attachment'))">
+                       </div>
 
 
-                        <div class="form-group">
-                            <label for="id_attachment">attachment:</label><br>
-                             <input class="form-control" type="file" id="id_attachment" name="attachment" required>
-                        </div>
+                    <div class="scrollable-div" name="previewHeaders" id="previewHeaders"></div>
 
-                        <button type="submit" id="submitButton" class="btn btn-primary">Register</button>
-                        <input type="text" id="id_createdBy" hidden="true" name="createdBy" value="{{ login_context.id }}">
+
+
+
                     </form>
-                </div>
+
+                                    <button type="submit" onclick="submitForm()" id="submitButton" class="btn btn-primary">Register</button>
+    </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function submitForm() {
+    document.getElementById("file_upload_form").submit();
+}
+        function handleFile(input) {
+            var file = input.files[0];
+            var formData = new FormData();
+            formData.append('attachment', file);
+            formData.append('col_index', document.getElementById('col_index').value);
+            formData.append('sheet_index', document.getElementById('sheet_index').value);
+
+
+            fetch('{% url "preview_csv" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    displayHeaders(data.headers);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // function displayHeaders(headers) {
+        //     var previewDiv = document.getElementById('previewHeaders');
+        //     previewDiv.innerHTML = '<h3>Preview Column Headers:</h3><ul>';
+        //     headers.forEach(function(header) {
+        //         previewDiv.innerHTML += '<li>' + header.trim() + '</li>';
+        //     });
+        //     previewDiv.innerHTML += '</ul>';
+        // }
+         function displayHeaders(headers) {
+            var previewDiv = document.getElementById('previewHeaders');
+            previewDiv.innerHTML = '<h3>Preview Column Headers:</h3>';
+            previewDiv.class ='overflow-y:auto'
+             headers.forEach(function (header) {
+                 var checkbox = document.createElement('input');
+                 checkbox.setAttribute('type', 'checkbox');
+                 checkbox.setAttribute('id', 'checkbox_' + header.trim().replace(/\s+/g, '_')); // Create unique ID for each checkbox
+                 checkbox.setAttribute('name', 'checkbox_' + header.trim().replace(/\s+/g, '_')); // Create unique name for each checkbox
+                 var label = document.createElement('label');
+                 label.setAttribute('for', 'checkbox_' + header.trim().replace(/\s+/g, '_')); // Set 'for' attribute to match checkbox ID
+                 label.textContent = header.trim();
+
+                 // Add checkbox and label to the preview div
+                 previewDiv.appendChild(checkbox);
+                 previewDiv.appendChild(label);
+                 previewDiv.appendChild(document.createElement('br')); // Add line break
+             });
+         }
+</script>
 <body>
 {% endblock %}
+
