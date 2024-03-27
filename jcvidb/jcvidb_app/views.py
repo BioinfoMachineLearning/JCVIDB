@@ -309,19 +309,29 @@ def preview_csv(request):
             return JsonResponse({'headers': []})
     return JsonResponse({'headers': []})
 
+def get_processed_options(_dict_option):
+    option_str=''
+    seperator="_$_$_"
+    for key, value in _dict_option.items():
+        print(f"{key}: {value}")
+        if key.startswith('checkbox_'):
+            if len(option_str)==0:
+                option_str=str(key)
+            else:
+                option_str=option_str+seperator+str(key)
 
+    return option_str
 def file_upload(request, context_id):
+    login_details = set_session_values(request)
     if request.method == 'GET':
-        print(context_id)
-        login_details = set_session_values(request)
-        print(login_details["id"])
         return render(request, 'file_upload.html',
-                      {'login_context': login_details})
+                      {'login_context': login_details,'added':False})
     elif request.method == 'POST':
         post_data = request.POST
         print(post_data.items)
-        for key, value in post_data.items():
-            print(f"{key}: {value}")
+        # for key, value in post_data.items():
+        #     print(f"{key}: {value}")
+
         print('equest.method == POST')
         print(request.POST.get('col_index'))
         print(request.POST.get('checkbox'))
@@ -330,10 +340,15 @@ def file_upload(request, context_id):
 
         column_form = ColumnDataPostForm(request.POST)
         if file_form.is_valid() and column_form.is_valid():
-            basic_data = Basic_data.objects.get(id=context_id)
-            print(column_form.cleaned_data['sheet_index'])
-            print(column_form.cleaned_data['col_index'])
-            print(column_form.cleaned_data['previewHeaders'])
-            print(request.POST)
-            print(file_form.cleaned_data['attachment'])
-            return None
+            # basic_data = Basic_data.objects.get(id=context_id)
+
+            # a_File_data =  File_Data(basic_data_id=context_id,attachment=request.FILES[''])
+            option_str = get_processed_options(post_data)
+            print(option_str)
+            file_instance = file_form.save(context_id,True)
+            column_instance = column_form.save(file_instance,True,option_str)
+            return render(request, 'file_upload.html',
+                      {'login_context': login_details,'added':True})
+        else:
+            return render(request, 'file_upload.html',
+                      {'login_context': login_details,'errors':file_form.errors,'added':False})

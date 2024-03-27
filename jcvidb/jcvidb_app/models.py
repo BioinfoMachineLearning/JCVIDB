@@ -45,7 +45,7 @@ class column_data(models.Model):
     file_data_id = models.ForeignKey(File_data, on_delete=models.CASCADE, null=True, blank=True)
     col_index = models.IntegerField(null=True, blank=True,default=0)
     sheet_index = models.IntegerField(null=True, blank=True,default=0)
-    column_names = models.IntegerField(null=True, blank=True, default=0)
+    column_names = models.TextField(null=True, blank=True, default=0)
 
 
 

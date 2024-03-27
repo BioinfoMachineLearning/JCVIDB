@@ -29,6 +29,12 @@ class FileUploadPostForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
+    def save(self, basic_data_id=None, commit=True):
+        instance = super().save(commit=False)
+        if basic_data_id and commit:
+            instance.basic_data_id = Basic_data.objects.get(pk=basic_data_id)
+            instance.save()
+        return instance
 
 class ColumnDataPostForm(forms.ModelForm):
     class Meta:
@@ -38,3 +44,11 @@ class ColumnDataPostForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
+
+    def save(self, file_id=None, commit=True,option_str=None):
+        instance = super().save(commit=False)
+        if file_id and commit:
+            instance.file_data_id = file_id
+            instance.column_names = option_str
+            instance.save()
+        return instance
