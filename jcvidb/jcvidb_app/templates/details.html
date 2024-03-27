@@ -45,17 +45,50 @@
                     <label class="col-sm-10" id="id_cd">{{prot_data.creationDate}}</label>
                 </div>
             </div>
+
+
+            <br>
+            <h4>Attachment</h4>
+
+            {% for x in prot_data.file_array %}
             <div class="form-group row">
                 <label class="control-label col-sm-2" for="id_attachment"><b>Attachment</b></label>
                 <div class="col-sm-10">
 
-                    {% if prot_data.attachment %}
-                    <label id ="id_attachment" class="col-sm-10" ><a href="{% url 'download_file' file_name=prot_data.attachment %}">  {{prot_data.attachment}}</a> </label>
+                    {% if x.file_ %}
+                    <label id ="id_attachment" class="col-sm-10" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>
                     {% else %}
                     <p>No file available for download.</p>
                     {% endif %}
                 </div>
+                 <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body table-responsive">
+                            <table class="table table-bordered">
+                               {% for tb in prot_data.file_array %}
+                                <h4> File Info</h4>
+                                <tbody>
+                                    {% for td in tb.display_data %}
+
+                                    <tr>
+                                        {% for i in td %}
+
+
+                                        <td>{{ i }}</td>
+
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
+
+
 
         </form>
     </div>

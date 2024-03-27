@@ -1,4 +1,5 @@
 # from django.core.checks import messages
+import numpy as np
 import pandas as pd
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
@@ -11,16 +12,37 @@ from django.shortcuts import render
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Basic_data, column_data
+from .basic_data_display_object import file_data_display_object, col_data_display_object, basic_data_display_object
+from .models import User, Basic_data, column_data, File_data
 from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
 from .registration_form import RegistrationForm
 
+# UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
-
+seperator = "_$_$_"
 from django.http import HttpResponseNotFound, FileResponse
 import os
 from django.conf import settings
+
+
+def get_csv_file_data(_file_name, columns_to_select, _page_number, _header_num):
+    # print(columns_to_select)
+    upload_dir = os.path.join(UPLOAD_DIR, 'media')
+    # print(upload_dir)
+    file_path = os.path.join(upload_dir, _file_name)
+    # print(file_path)
+    if not os.path.exists(file_path):
+        return []
+    df = pd.read_excel(file_path, sheet_name=_page_number-1, header=_header_num-1)
+    selected_columns_df = df.loc[:, columns_to_select]
+    two_dimensional_array = selected_columns_df.values
+    print(two_dimensional_array)
+    print(columns_to_select)
+
+    my_2d_array = np.insert(two_dimensional_array, 0, columns_to_select, axis=0)
+    print(my_2d_array)
+    return my_2d_array
 
 
 def download_file(request, file_name):
@@ -59,14 +81,14 @@ def set_session_values(request):
         return None
 
 
-def handle_uploaded_file(uploaded_file):
-    print('handle_uploaded_file')
-    if not os.path.exists(UPLOAD_DIR):
-        os.makedirs(UPLOAD_DIR)
-    with open(os.path.join(UPLOAD_DIR, uploaded_file.name), 'wb+') as destination:
-        print('file uploaded')
-        for chunk in uploaded_file.chunks():
-            destination.write(chunk)
+# def handle_uploaded_file(uploaded_file):
+#     print('handle_uploaded_file')
+#     if not os.path.exists(UPLOAD_DIR):
+#         os.makedirs(UPLOAD_DIR)
+#     with open(os.path.join(UPLOAD_DIR, uploaded_file.name), 'wb+') as destination:
+#         print('file uploaded')
+#         for chunk in uploaded_file.chunks():
+#             destination.write(chunk)
 
 
 def main(request):
@@ -99,14 +121,57 @@ def main(request):
         return render(request, 'main.html', {'aProteomics_data': aProteomics_data, 'login_context': login_context})
 
 
+def basic_data_display_mapper(_aProteomics_data):
+    a_basic = basic_data_display_object()
+    a_basic.id = _aProteomics_data.id
+    a_basic.details = _aProteomics_data.details
+    a_basic.references= _aProteomics_data.references
+    a_basic.funding= _aProteomics_data.funding
+    a_basic.createdBy=_aProteomics_data.createdBy
+    a_basic.type= _aProteomics_data.type
+    a_basic.approved=_aProteomics_data.approved
+    a_basic.attachment=_aProteomics_data.attachment
+    a_basic.creationDate=_aProteomics_data.creationDate
+
+    return a_basic
+
 def details(request, id):
     login_context = set_session_values(request)
-    aProteomics_data = Basic_data.objects.get(id=id)
+    aProteomics_data = Basic_data.objects.get(pk=id)
+
+    a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
     print(aProteomics_data.id)
+    file_data = aProteomics_data.file_data_set.all()
+    print(file_data)
+
+    # file_display_array = []
+    for _file in file_data:
+        a_file_display = file_data_display_object()
+        a_file_display.id = _file.id
+        a_file_display.file_ = _file.attachment
+        col_arr = []
+
+        col_data = _file.column_data_set.all()
+
+
+        for _column in col_data:
+        ### if multiple important sheet is present
+            col_object =column_data.objects.get(id=_column.id)
+            if len (col_object.column_names) >0:
+                print('here')
+                array = get_csv_file_data(str(_file.attachment), col_object.column_names.replace("checkbox_","").split(seperator), col_object.sheet_index,
+                                  col_object.col_index)
+
+                a_file_display.display_data = array
+                print(array)
+
+        a_basic_data_display_object.add_file(a_file_display)
+
+
     template = loader.get_template('details.html')
     context = {
-        'prot_data': aProteomics_data,
-        'login_context': login_context
+        'prot_data': a_basic_data_display_object,
+        'login_context': login_context,
     }
     return HttpResponse(template.render(context, request))
 
@@ -190,9 +255,6 @@ def sign_in(request):
             login_context = {"id": request.session['user_id'],
                              "last_name": request.session['last_name'],
                              "admin": request.session['admin']}
-
-            # print("success")
-
             return redirect('../')  # Assuming 'dashboard' is the name of the URL pattern for the dashboard page
         else:
             # Display error message (optional)
@@ -219,14 +281,6 @@ def prot_post(request):
         if request.method == 'POST':
             form = DataPostForm(request.POST, request.FILES)
             if form.is_valid():
-                # try:
-                #     uploaded_file = request.FILES['attachment']
-                #     # handle_uploaded_file(uploaded_file)
-                # except:
-                #     form = DataPostForm(form)
-                #     messages.error(request, 'Form is invalid!')
-                #     return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
-
                 instance_object = form.save(sessionid=request.session['user_id']).id
                 messages.success(request, 'Form submitted successfully!')
                 form = DataPostForm()
@@ -302,30 +356,33 @@ def preview_csv(request):
             csv_file = request.FILES['attachment']
             df = pd.read_excel(csv_file, sheet_name=page, header=col_head)
             final_array = df.columns.to_list()
-            print(final_array)
-            print(len(final_array))
+            # print(final_array)
+            # print(len(final_array))
             return JsonResponse({'headers': final_array})
         except:
             return JsonResponse({'headers': []})
     return JsonResponse({'headers': []})
 
+
 def get_processed_options(_dict_option):
-    option_str=''
-    seperator="_$_$_"
+    option_str = ''
+
     for key, value in _dict_option.items():
         print(f"{key}: {value}")
         if key.startswith('checkbox_'):
-            if len(option_str)==0:
-                option_str=str(key)
+            if len(option_str) == 0:
+                option_str = str(key)
             else:
-                option_str=option_str+seperator+str(key)
+                option_str = option_str + seperator + str(key)
 
     return option_str
+
+
 def file_upload(request, context_id):
     login_details = set_session_values(request)
     if request.method == 'GET':
         return render(request, 'file_upload.html',
-                      {'login_context': login_details,'added':False})
+                      {'login_context': login_details, 'added': False})
     elif request.method == 'POST':
         post_data = request.POST
         print(post_data.items)
@@ -345,10 +402,10 @@ def file_upload(request, context_id):
             # a_File_data =  File_Data(basic_data_id=context_id,attachment=request.FILES[''])
             option_str = get_processed_options(post_data)
             print(option_str)
-            file_instance = file_form.save(context_id,True)
-            column_instance = column_form.save(file_instance,True,option_str)
+            file_instance = file_form.save(context_id, True)
+            column_instance = column_form.save(file_instance, True, option_str)
             return render(request, 'file_upload.html',
-                      {'login_context': login_details,'added':True})
+                          {'login_context': login_details, 'added': True})
         else:
             return render(request, 'file_upload.html',
-                      {'login_context': login_details,'errors':file_form.errors,'added':False})
+                          {'login_context': login_details, 'errors': file_form.errors, 'added': False})

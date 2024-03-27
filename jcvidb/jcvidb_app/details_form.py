@@ -7,7 +7,8 @@ class DetailsForm(forms.ModelForm):
 
     class Meta:
         model = Basic_data
-        fields = ['id','createdBy', 'references',  'details' ,'funding', 'type','attachment']
+        fields = ['id','createdBy', 'references',  'details' ,'funding', 'type']
+
 
 # def save(self, sessionid=None, commit=True):
 #      instance = super().save(commit=False)
