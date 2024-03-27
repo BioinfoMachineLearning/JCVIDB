@@ -48,15 +48,17 @@
 
 
             <br>
+            {% if  prot_data.file_array|length > 0 %}
             <h4>Attachment</h4>
+            {% endif %}
 
             {% for x in prot_data.file_array %}
             <div class="form-group row">
-                <label class="control-label col-sm-2" for="id_attachment"><b>Attachment</b></label>
-                <div class="col-sm-10">
 
+                <div class="col-sm-10">
+                    <label class="control-label col-sm-2" for="id_attachment"><li>Attachment</li></label>
                     {% if x.file_ %}
-                    <label id ="id_attachment" class="col-sm-10" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>
+                    <label id ="id_attachment" class="col-sm-8" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>
                     {% else %}
                     <p>No file available for download.</p>
                     {% endif %}
@@ -64,21 +66,26 @@
                  <div class="modal-body">
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
-                            <table class="table table-bordered">
-                               {% for tb in prot_data.file_array %}
+                            <table class="table table-bordered" id={{x.id}}>
+                               {% if  x.display_data|length > 0 %}
                                 <h4> File Info</h4>
+                                {% endif %}
+<!--                                {% for t in  x.display_data %}-->
+<!--                                <p>{{t}}</p>-->
+<!--                                {% endfor %}-->
+
+                               {% for tb in x.display_data %}
+
                                 <tbody>
-                                    {% for td in tb.display_data %}
 
                                     <tr>
-                                        {% for i in td %}
+                                        {% for i in tb %}
 
 
-                                        <td>{{ i }}</td>
+                                            <td>{{ i }}</td>
 
                                         {% endfor %}
                                     </tr>
-                                    {% endfor %}
                                 </tbody>
                                 {% endfor %}
                             </table>

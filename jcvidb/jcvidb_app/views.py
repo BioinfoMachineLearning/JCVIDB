@@ -27,22 +27,24 @@ from django.conf import settings
 
 
 def get_csv_file_data(_file_name, columns_to_select, _page_number, _header_num):
-    # print(columns_to_select)
-    upload_dir = os.path.join(UPLOAD_DIR, 'media')
-    # print(upload_dir)
-    file_path = os.path.join(upload_dir, _file_name)
-    # print(file_path)
-    if not os.path.exists(file_path):
-        return []
-    df = pd.read_excel(file_path, sheet_name=_page_number-1, header=_header_num-1)
-    selected_columns_df = df.loc[:, columns_to_select]
-    two_dimensional_array = selected_columns_df.values
-    print(two_dimensional_array)
-    print(columns_to_select)
+    if _header_num>0:
+        # print(columns_to_select)
+        upload_dir = os.path.join(UPLOAD_DIR, 'media')
+        # print(upload_dir)
+        file_path = os.path.join(upload_dir, _file_name)
+        # print(file_path)
+        if not os.path.exists(file_path):
+            return []
+        df = pd.read_excel(file_path, sheet_name=_page_number-1, header=_header_num-1)
+        selected_columns_df = df.loc[:, columns_to_select]
+        two_dimensional_array = selected_columns_df.values
+        # print(two_dimensional_array)
+        print(columns_to_select)
 
-    my_2d_array = np.insert(two_dimensional_array, 0, columns_to_select, axis=0)
-    print(my_2d_array)
-    return my_2d_array
+        my_2d_array = np.insert(two_dimensional_array, 0, columns_to_select, axis=0)
+        return my_2d_array
+    else:
+        return None
 
 
 def download_file(request, file_name):
@@ -143,31 +145,34 @@ def details(request, id):
     print(aProteomics_data.id)
     file_data = aProteomics_data.file_data_set.all()
     print(file_data)
-
+    i=0
     # file_display_array = []
     for _file in file_data:
+        print('count '+str(i))
+        i=i+1
         a_file_display = file_data_display_object()
         a_file_display.id = _file.id
         a_file_display.file_ = _file.attachment
         col_arr = []
-
+        print(a_file_display.id)
         col_data = _file.column_data_set.all()
 
 
         for _column in col_data:
         ### if multiple important sheet is present
             col_object =column_data.objects.get(id=_column.id)
+            print(col_object)
             if len (col_object.column_names) >0:
                 print('here')
                 array = get_csv_file_data(str(_file.attachment), col_object.column_names.replace("checkbox_","").split(seperator), col_object.sheet_index,
                                   col_object.col_index)
 
                 a_file_display.display_data = array
-                print(array)
+                # print(array)
 
         a_basic_data_display_object.add_file(a_file_display)
 
-
+    # print(len(a_basic_data_display_object.file_array[0].display_data))
     template = loader.get_template('details.html')
     context = {
         'prot_data': a_basic_data_display_object,
