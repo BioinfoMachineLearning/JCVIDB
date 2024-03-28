@@ -30,6 +30,7 @@ class Data_type(models.Model):
 
 class Basic_data(models.Model):
     details = models.TextField(null=True, blank=True)
+    code =  models.CharField(max_length=9)
     references=models.TextField(null=True, blank=True)
     funding = models.TextField(null=True,blank=True)
     createdBy = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)

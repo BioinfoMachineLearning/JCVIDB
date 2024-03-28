@@ -127,6 +127,7 @@ def main(request):
 def basic_data_display_mapper(_aProteomics_data):
     a_basic = basic_data_display_object()
     a_basic.id = _aProteomics_data.id
+    a_basic.code = _aProteomics_data.code
     a_basic.details = _aProteomics_data.details
     a_basic.references = _aProteomics_data.references
     a_basic.funding = _aProteomics_data.funding
@@ -290,7 +291,8 @@ def sign_out(request):
         del request.session['admin']
     redirect('../')
     print('redirecting')
-    return render(request, 'sign_in.html', context=None)
+    # return render(request, 'sign_in.html', context=None)
+    return redirect('../sign_in', context=None)
 
 
 def prot_post(request):

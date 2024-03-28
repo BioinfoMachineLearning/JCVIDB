@@ -13,10 +13,24 @@ class DataPostForm(forms.ModelForm):
         cleaned_data = super().clean()
         return cleaned_data
 
+    def generate_code(self):
+        latest_serial = Basic_data.objects.order_by('id').last()
+        if latest_serial:
+            # Extract the serial number from the custom_id and increment it
+            serial_number = int(latest_serial.id) + 1
+        else:
+            serial_number = 1  # Start with 1 if no previous serial exists
+
+            # Format the serial number to ensure it has 8 digits and starts with "P"
+        self.code = 'P' + str(serial_number).zfill(8)
+        return self.code
+
     def save(self, sessionid=None, commit=True):
+
         instance = super().save(commit=False)
         if sessionid and commit:
             instance.createdBy = User.objects.get(pk=sessionid)
+            instance.code = self.generate_code()
             instance.approved= 0 #  Set the sessionid attribute
             instance.save()
         return instance

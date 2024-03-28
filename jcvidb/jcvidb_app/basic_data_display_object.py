@@ -8,6 +8,7 @@ class basic_data_display_object():
 
     def __init__(self):
         self.id = ""
+        self.code = ""
         self.details = ""
         self.references = ""
         self.funding = ""

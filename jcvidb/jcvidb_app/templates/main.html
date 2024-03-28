@@ -52,7 +52,7 @@
   <tbody>
     {% for x in aProteomics_data %}
     <tr>
-          <td><a href="details/{{ x.id }}">{{ x.id }}</a></td>
+          <td><a href="../details/{{ x.id }}">{{ x.code }}</a></td>
           <td><textarea rows="2" cols="30" readonly style="border:0px;width: 100%;">{{ x.details }}</textarea> </td>
           <td>{{ x.type.name }}</td>
     </tr>

@@ -87,7 +87,7 @@
 
                 <ol>
                     {% for i in user_data.approved_posts %}
-                    <li><a href="../details/{{ i.id }}">{{i.id}}</a></li>
+                    <li><a href="../details/{{ i.id }}">{{i.code}}</a></li>
                     {% endfor %}
                 </ol>
 
@@ -103,7 +103,7 @@
             <div class="scrollable-div">
                 <ol>
                     {% for i in user_data.unapproved_posts %}
-                    <li><a href="../details/{{ i.id }}">{{i.id}}</a></li>
+                    <li><a href="../details/{{ i.id }}">{{i.code}}</a></li>
                     {% endfor %}
                 </ol>
             </div>
