@@ -22,10 +22,9 @@
 <table class="table" style="margin: 20px;">
   <thead>
     <tr>
-      <th scope="col">ID</th>
-      <th scope="col">PGAN</th>
-      <th scope="col">Essentiality</th>
-      <th scope="col">Transporters</th>
+      <th scope="col">Code</th>
+      <th scope="col">Details</th>
+      <th scope="col">Type</th>
     </tr>
   </thead>
   <tbody>
@@ -33,11 +32,10 @@
 
     {% for x in results %}
       <tr>
-      <td>{{ x.id }} </a></td>
-        <td><a href="../details/{{ x.id }}">{{ x.PGAN }}  </a></td>
-        <td>{{ x.essentiality }}   </td>
-         <td>{{ x.Transporters }}</td>
-          </tr>
+          <td><a href="../update_prot/{{ x.id }}">{{ x.code }}</a></td>
+          <td><textarea rows="2" cols="40" readonly style="border:0px;width: 100%;"> {{ x.details }}</textarea> </td>
+          <td>{{ x.type.name }}</td>
+      </tr>
     {% endfor %}
 
   </tr>

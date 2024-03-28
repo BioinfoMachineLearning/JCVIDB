@@ -18,7 +18,7 @@ from .models import User, Basic_data, column_data, File_data
 from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
 from .registration_form import RegistrationForm
-
+from django.contrib.postgres.search import SearchVector
 # UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 seperator = "_$_$_"
@@ -200,9 +200,14 @@ def details(request, id):
 def search(request):
     login_details = set_session_values(request)
     name = request.GET.get('PGAN_name', '')
-    results_list = Basic_data.objects.filter(PGAN__icontains=name)
-    results_list = results_list.filter(approved=1)
+    results = Basic_data.objects.annotate(search=SearchVector('details','references','code','funding')).filter(search=name)
+    results_list = results.filter(approved=1)
     print(len(results_list))
+
+    # name = request.GET.get('PGAN_name', '')
+    # results_list = Basic_data.objects.filter(PGAN__icontains=name)
+    # results_list = results_list.filter(approved=1)
+    # print(len(results_list))
 
     page_number = request.GET.get('page')
     paginator = Paginator(results_list, 10)
