@@ -427,3 +427,18 @@ def file_upload(request, context_id):
         else:
             return render(request, 'file_upload.html',
                           {'login_context': login_details, 'errors': file_form.errors, 'added': False})
+
+
+def profile_view(request):
+    login_context = set_session_values(request)
+    user_data = User.objects.get(pk=login_context['id'])
+
+
+
+
+    template = loader.get_template('profile.html')
+    context = {
+        'user_data': user_data,
+        'login_context': login_context,
+    }
+    return HttpResponse(template.render(context, request))

@@ -1,0 +1,91 @@
+{% extends "./common/header.html" %}
+
+{% block content %}
+
+
+<div class="col-sm-12 " >
+    <div class="text-center">
+            <h1 > Details</h1>
+
+    </div>
+    <hr>
+
+    <div class="container" style="margin: 5%;">
+        <form class="form-horizontal" >
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_id"><b>ID</b></label>
+                <div class="col-sm-10">
+                    <label id="id_id" class="col-sm-10">{{user_data.id}}</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_type"><b>Account Type:</b></label>
+                <div class="col-sm-10">
+
+                    {% if login_context.admin  %}
+                    <label class="col-sm-10" id="id_type" style="border: 0px;">Admin</label>
+                    {% endif %}
+
+                    {% if not login_context.admin  %}
+                    <label class="col-sm-10" id="id_type" style="border: 0px;">Basic User</label>
+                    {% endif %}
+
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_fname"><b>First Name: </b></label>
+                <div class="col-sm-10">
+                    <label class="col-sm-10" id="id_fname" style="border: 0px;">{{user_data.firstname}} </label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_lname"><b>Last Name: </b></label>
+                <div class="col-sm-10">
+                    <label class="col-sm-10" id="id_lname" style="border: 0px;">{{user_data.lastname}} </label>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_email"><b>Email:</b></label>
+                <div class="col-sm-10">
+                    <label id="id_email" class="col-sm-10" style="border: 0px;">{{user_data.email}}</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_phone"><b>Phone:</b></label>
+                <div class="col-sm-10">
+                    <label class="col-sm-10" id="id_phone" style="border: 0px;">{{user_data.funding}}</label>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_instituation"><b>Instituation:</b></label>
+                <div class="col-sm-10">
+                    <label class="col-sm-10" id="id_instituation" style="border: 0px;">{{user_data.instituation}}</label>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="control-label col-sm-2" for="id_occupation"><b>Occupation:</b></label>
+                <div class="col-sm-10">
+                    <label class="col-sm-10" id="id_occupation" style="border: 0px;">{{user_data.occupation}}</label>
+                </div>
+            </div>
+
+<!--            <div class="form-group row">-->
+<!--                <label class="control-label col-sm-2" for="id_cd"><b>Joined Date:</b></label>-->
+<!--                <div class="col-sm-10">-->
+<!--                    <label class="col-sm-10" id="id_cd">{{user.creationDate}}</label>-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}
