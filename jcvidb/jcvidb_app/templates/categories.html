@@ -1,0 +1,98 @@
+{% extends "./common/header.html" %}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    .footer {
+       position: fixed;
+       left: 0;
+       bottom: 0;
+       width: 100%;
+       background-color: #9cd7ff;
+       color: #af1b1b;
+       text-align: center;
+        height:100px;
+    }
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px; /* Adjust margin as needed */
+    }
+
+    .pagination {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .pagination li {
+        display: inline;
+        margin-right: 5px; /* Adjust spacing between pagination links */
+    }
+    </style>
+</head>
+
+{% block content %}
+{% for msg in messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Success!!</strong>   {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+{% endfor %}
+<div class="row">
+    <table class="table" style="margin: 20px;">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Details</th>
+          <th scope="col">Type</th>
+        </tr>
+      </thead>
+  <tbody>
+    {% for x in aProteomics_data %}
+    <tr>
+          <td><a href="../details/{{ x.id }}">{{ x.code }}</a></td>
+          <td><textarea rows="2" cols="30" readonly style="border:0px;width: 100%;">{{ x.details }}</textarea> </td>
+          <td>{{ x.type.name }}</td>
+    </tr>
+    {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+
+</div>
+
+
+<div class="pagination-container col-sm-12"  >
+     <div class="text-center">
+          <span class="step-links">
+        {% if  aProteomics_data.has_previous %}
+            <a href="?page=1">&laquo; </a>
+            <a href="?page={{ aProteomics_data.previous_page_number }}"> &#8249; prev </a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ aProteomics_data.number }} of {{ aProteomics_data.paginator.num_pages }}.
+        </span>
+
+        {% if aProteomics_data.has_next %}
+            <a href="?page={{ aProteomics_data.next_page_number }}">next &#8250;</a>
+            <a href="?page={{ aProteomics_data.paginator.num_pages }}"> &raquo;</a>
+        {% endif %}
+    </span>
+
+    </div>
+
+</div>
+
+
+
+
+{% endblock %}
+
+
+
+
+

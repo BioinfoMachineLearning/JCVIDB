@@ -19,6 +19,7 @@ from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
 from .registration_form import RegistrationForm
 from django.contrib.postgres.search import SearchVector
+
 # UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 seperator = "_$_$_"
@@ -93,6 +94,28 @@ def set_session_values(request):
 #         for chunk in uploaded_file.chunks():
 #             destination.write(chunk)
 
+def category_list_view(request,id):
+    try:
+        if request.session['user_id'] and request.session['last_name']:
+            login_context = {"id": request.session['user_id'],
+                             "last_name": request.session['last_name'],
+                             "admin": request.session['admin']}
+    except:
+        login_context = None
+    if request != "POST":
+
+        aProteomics_data_list = Basic_data.objects.filter(approved=1).filter(type_id=id)
+        paginator = Paginator(aProteomics_data_list, 10)
+        page_number = request.GET.get('page')
+        try:
+            aProteomics_data = paginator.page(page_number)
+        except PageNotAnInteger:
+            aProteomics_data = paginator.page(1)
+        except EmptyPage:
+            aProteomics_data = paginator.page(paginator.num_pages)
+
+        return render(request, 'categories.html', {'aProteomics_data': aProteomics_data, 'login_context': login_context})
+
 
 def main(request):
     try:
@@ -138,6 +161,8 @@ def basic_data_display_mapper(_aProteomics_data):
     a_basic.creationDate = _aProteomics_data.creationDate
 
     return a_basic
+
+
 def user_data_display_mapper(_user_data):
     an_user = user_data_display()
     an_user.id = _user_data.id
@@ -151,6 +176,7 @@ def user_data_display_mapper(_user_data):
     an_user.approve = _user_data.approve
 
     return an_user
+
 
 def details(request, id):
     login_context = set_session_values(request)
@@ -200,7 +226,8 @@ def details(request, id):
 def search(request):
     login_details = set_session_values(request)
     name = request.GET.get('PGAN_name', '')
-    results = Basic_data.objects.annotate(search=SearchVector('details','references','code','funding')).filter(search=name)
+    results = Basic_data.objects.annotate(search=SearchVector('details', 'references', 'code', 'funding')).filter(
+        search=name)
     results_list = results.filter(approved=1)
     print(len(results_list))
 
@@ -457,10 +484,10 @@ def profile_view(request):
     display_user_data = user_data_display_mapper(user_data)
     # Basic_data.objects.filter(approved=1)
     all_post = Basic_data.objects.filter(createdBy_id=user_data)
-    approved_post =all_post.filter(approved=1)
+    approved_post = all_post.filter(approved=1)
     unapproved_post = all_post.filter(approved=0)
-    display_user_data.approved_posts=approved_post
-    display_user_data.unapproved_posts=unapproved_post
+    display_user_data.approved_posts = approved_post
+    display_user_data.unapproved_posts = unapproved_post
 
     print(len(display_user_data.approved_posts))
     print(len(display_user_data.unapproved_posts))

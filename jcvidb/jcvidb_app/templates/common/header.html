@@ -18,6 +18,16 @@
         .table-responsive {
               max-height:300px;
           }
+        nav ul li.active a {
+    /* Add your styles for the active link */
+    font-weight: bold;
+    color: #4c83ff; /* For example, change color to red */
+}
+        .display-3 a:hover {
+        background-color: transparent !important; /* Remove background color on hover */
+        color: white !important; /* Use the default text color on hover */
+        text-decoration: none !important; /* Remove underline on hover */
+    }
     </style>
 </head>
 
@@ -27,7 +37,7 @@
 <div class="row" style="background: #9cd7ff">
   <div class="col-sm-6"  style="padding: 50px;">
     <div class="text-left" style="background: #9cd7ff">
-      <h1 style="color:white" class="display-3">JCVIDB</h1>
+        <a href="../main"><h1 style="color:white" class="display-3">JCVIDB</h1></a>
     </div>
   </div>
   <div class="col-sm-6 row" style="padding-top: 1px;">
@@ -97,11 +107,35 @@
     </div>
     </div>
   </div>
+
+
+  <div class="col-sm-12">
+      <nav class="navbar navbar-expand-sm bg-light navbar-light" style="background-color: #e3f2fd;">
+          <ul class="navbar-nav">
+              <li class="nav-item {% if request.path == '/main/' %}active{% endif %}">
+                  <a class="nav-link" href="../main">Home</a>
+              </li>
+              <li class="nav-item {% if request.path == '/categories/1' %}active{% endif %}">
+                  <a class="nav-link" href="../categories/1">Proteomics</a>
+              </li>
+              <li class="nav-item {% if request.path == '/categories/2' %}active{% endif %}">
+                  <a class="nav-link" href="../categories/2">Trans-Proteomics</a>
+              </li>
+              <li class="nav-item {% if request.path == '/categories/3' %}active{% endif %}">
+                  <a class="nav-link" href="../categories/3">Interactoms</a>
+              </li>
+              <li class="nav-item {% if request.path == '/categories/4' %}active{% endif %}">
+                  <a class="nav-link" href="../categories/4">Physical-Properties</a>
+              </li>
+          </ul>
+      </nav>
+  </div>
 </div>
 
-<div class="col-sm-12">{% block content %}
+<div class="col-sm-12">
+  {% block content %}
 
-{% endblock %}
+  {% endblock %}
 
 </div>
 </body>
