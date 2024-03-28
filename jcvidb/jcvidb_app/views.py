@@ -12,7 +12,8 @@ from django.shortcuts import render
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 
-from .basic_data_display_object import file_data_display_object, col_data_display_object, basic_data_display_object
+from .basic_data_display_object import file_data_display_object, col_data_display_object, basic_data_display_object, \
+    user_data_display
 from .models import User, Basic_data, column_data, File_data
 from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
@@ -27,7 +28,7 @@ from django.conf import settings
 
 
 def get_csv_file_data(_file_name, columns_to_select, _page_number, _header_num):
-    if _header_num>0:
+    if _header_num > 0:
         # print(columns_to_select)
         upload_dir = os.path.join(UPLOAD_DIR, 'media')
         # print(upload_dir)
@@ -35,7 +36,7 @@ def get_csv_file_data(_file_name, columns_to_select, _page_number, _header_num):
         # print(file_path)
         if not os.path.exists(file_path):
             return []
-        df = pd.read_excel(file_path, sheet_name=_page_number-1, header=_header_num-1)
+        df = pd.read_excel(file_path, sheet_name=_page_number - 1, header=_header_num - 1)
         selected_columns_df = df.loc[:, columns_to_select]
         two_dimensional_array = selected_columns_df.values
         # print(two_dimensional_array)
@@ -127,15 +128,28 @@ def basic_data_display_mapper(_aProteomics_data):
     a_basic = basic_data_display_object()
     a_basic.id = _aProteomics_data.id
     a_basic.details = _aProteomics_data.details
-    a_basic.references= _aProteomics_data.references
-    a_basic.funding= _aProteomics_data.funding
-    a_basic.createdBy=_aProteomics_data.createdBy
-    a_basic.type= _aProteomics_data.type
-    a_basic.approved=_aProteomics_data.approved
-    a_basic.attachment=_aProteomics_data.attachment
-    a_basic.creationDate=_aProteomics_data.creationDate
+    a_basic.references = _aProteomics_data.references
+    a_basic.funding = _aProteomics_data.funding
+    a_basic.createdBy = _aProteomics_data.createdBy
+    a_basic.type = _aProteomics_data.type
+    a_basic.approved = _aProteomics_data.approved
+    a_basic.attachment = _aProteomics_data.attachment
+    a_basic.creationDate = _aProteomics_data.creationDate
 
     return a_basic
+def user_data_display_mapper(_user_data):
+    an_user = user_data_display()
+    an_user.id = _user_data.id
+    an_user.firstname = _user_data.firstname
+    an_user.lastname = _user_data.lastname
+    an_user.role_id = _user_data.role_id
+    an_user.email = _user_data.email
+    an_user.occupation = _user_data.occupation
+    an_user.phone = _user_data.phone
+    an_user.instituation = _user_data.instituation
+    an_user.approve = _user_data.approve
+
+    return an_user
 
 def details(request, id):
     login_context = set_session_values(request)
@@ -145,11 +159,11 @@ def details(request, id):
     print(aProteomics_data.id)
     file_data = aProteomics_data.file_data_set.all()
     print(file_data)
-    i=0
+    i = 0
     # file_display_array = []
     for _file in file_data:
-        print('count '+str(i))
-        i=i+1
+        print('count ' + str(i))
+        i = i + 1
         a_file_display = file_data_display_object()
         a_file_display.id = _file.id
         a_file_display.file_ = _file.attachment
@@ -157,15 +171,16 @@ def details(request, id):
         print(a_file_display.id)
         col_data = _file.column_data_set.all()
 
-
         for _column in col_data:
-        ### if multiple important sheet is present
-            col_object =column_data.objects.get(id=_column.id)
+            ### if multiple important sheet is present
+            col_object = column_data.objects.get(id=_column.id)
             print(col_object)
-            if len (col_object.column_names) >0:
+            if len(col_object.column_names) > 0:
                 print('here')
-                array = get_csv_file_data(str(_file.attachment), col_object.column_names.replace("checkbox_","").split(seperator), col_object.sheet_index,
-                                  col_object.col_index)
+                array = get_csv_file_data(str(_file.attachment),
+                                          col_object.column_names.replace("checkbox_", "").split(seperator),
+                                          col_object.sheet_index,
+                                          col_object.col_index)
 
                 a_file_display.display_data = array
                 # print(array)
@@ -432,13 +447,19 @@ def file_upload(request, context_id):
 def profile_view(request):
     login_context = set_session_values(request)
     user_data = User.objects.get(pk=login_context['id'])
+    display_user_data = user_data_display_mapper(user_data)
+    # Basic_data.objects.filter(approved=1)
+    all_post = Basic_data.objects.filter(createdBy_id=user_data)
+    approved_post =all_post.filter(approved=1)
+    unapproved_post = all_post.filter(approved=0)
+    display_user_data.approved_posts=approved_post
+    display_user_data.unapproved_posts=unapproved_post
 
-
-
-
+    print(len(display_user_data.approved_posts))
+    print(len(display_user_data.unapproved_posts))
     template = loader.get_template('profile.html')
     context = {
-        'user_data': user_data,
+        'user_data': display_user_data,
         'login_context': login_context,
     }
     return HttpResponse(template.render(context, request))

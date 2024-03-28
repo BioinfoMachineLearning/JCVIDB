@@ -31,3 +31,13 @@ class col_data_display_object():
         self.col_index = 0
         self.sheet_index = 0
         self.column_names = ""
+
+
+class user_data_display():
+    def __init__(self):
+        self.file_data_id = ""
+        self.col_index = 0
+        self.sheet_index = 0
+        self.column_names = ""
+        self.approved_posts =[]
+        self.unapproved_posts = []
