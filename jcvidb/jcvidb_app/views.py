@@ -325,26 +325,39 @@ def appprove_post(request):
 
 def update_prot(request, id):
     login_details = set_session_values(request)
-    print(login_details['admin'])
-    form = ProtUpdateForm()
+    a_basic_data_display_object = basic_data_display_object()
     if login_details['admin'] == True:
         if request.method == 'GET':
-            item = Basic_data.objects.get(id=id)
-            form = ProtUpdateForm(instance=item)
+            aProteomics_data = Basic_data.objects.get(pk=id)
+            a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
+            file_data = aProteomics_data.file_data_set.all()
+            for _file in file_data:
+                a_file_display = file_data_display_object()
+                a_file_display.id = _file.id
+                a_file_display.file_ = _file.attachment
+                col_data = _file.column_data_set.all()
+
+                for _column in col_data:
+                    col_object = column_data.objects.get(id=_column.id)
+                    if len(col_object.column_names) > 0:
+                        array = get_csv_file_data(str(_file.attachment),
+                                                  col_object.column_names.replace("checkbox_", "").split(seperator),
+                                                  col_object.sheet_index,
+                                                  col_object.col_index)
+                        a_file_display.display_data = array
+                a_basic_data_display_object.add_file(a_file_display)
             return render(request, 'update_prot.html',
-                          {'prot_data': item, 'login_context': login_details})
+                          {'prot_data': a_basic_data_display_object, 'login_context': login_details})
+
 
         else:
             item = Basic_data.objects.get(id=id)
+            print(item)
             form = ProtUpdateForm(instance=item)
             item.approved = 1
             item.save()
+            print('../approve_post')
             return redirect('../approve_post')
-
-            # ProtUpdateForm.cleaned_data['PGAN']=item.PGAN
-
-            # return redirect('./' + str(id))
-        # return render(request, 'update_prot.html', {'form': form, 'login_context': login_details})
 
 
 @csrf_exempt
