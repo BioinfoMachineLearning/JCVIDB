@@ -372,7 +372,7 @@ def appprove_post(request):
                       {'aProteomics_data': aProteomics_data, 'login_context': login_context})
 
 
-def update_prot(request, id):
+def approve_data(request, id):
     login_details = set_session_values(request)
     a_basic_data_display_object = basic_data_display_object()
     if login_details['admin'] == True:
@@ -395,7 +395,7 @@ def update_prot(request, id):
                                                   col_object.col_index)
                         a_file_display.display_data = array
                 a_basic_data_display_object.add_file(a_file_display)
-            return render(request, 'update_prot.html',
+            return render(request, 'approve_data.html',
                           {'prot_data': a_basic_data_display_object, 'login_context': login_details})
 
 
