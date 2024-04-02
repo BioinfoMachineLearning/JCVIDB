@@ -20,7 +20,7 @@
     <hr>
 
     <div class="container" style="margin: 5%;">
-        <form class="form-horizontal" >
+
             <div class="form-group row">
                 <label class="control-label col-sm-2" for="id_id"><b>Code</b></label>
                 <div class="col-sm-10">
@@ -64,10 +64,29 @@
             {% for x in prot_data.file_array %}
             <div class="form-group row">
 
-                <div class="col-sm-10">
+                <div class="col-sm-10 row">
                     <label class="control-label col-sm-2" for="id_attachment"><li>Attachment</li></label>
                     {% if x.file_ %}
-                    <label id ="id_attachment" class="col-sm-8" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>
+                    <div class="col-sm-8">
+                          <label id ="id_attachment" class="col-sm-10" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary ">
+                            <a    >
+                                <i  class= "fas fa-pen "></i>
+                            </a>
+
+                        </button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-danger ">
+                            <a href="../delete_data/{{ x.id }}" >
+                                <i style=" text-decoration: none;" class="fas fa-trash"></i>
+                            </a>
+                        </button>
+                    </div>
+
+
                     {% else %}
                     <p>No file available for download.</p>
                     {% endif %}
@@ -102,7 +121,6 @@
 
 
 
-        </form>
     </div>
 </div>
 

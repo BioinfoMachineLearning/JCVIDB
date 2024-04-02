@@ -546,3 +546,20 @@ def update_posted_data(request,id):
     else:
         return redirect('../details/' + str(id))
 
+def delete_data(request,id):
+    print("delete_data")
+    login_context = set_session_values(request)
+    a_file_data = File_data.objects.get(pk=id)
+    prot_id = Basic_data.objects.get(pk=a_file_data.basic_data_id.id)
+    print(prot_id.id)
+    if prot_id.createdBy_id == login_context['id']:
+        if request.method == 'GET':
+            a_file_data.is_delete = 1
+            a_file_data.save()
+            col_data = a_file_data.column_data_set.all()
+            for cols in col_data:
+                ### if multiple important sheet is present
+                col_object = column_data.objects.get(id=cols.id)
+                cols.is_delete = 1
+                cols.save()
+        return redirect('../details/' + str(prot_id.id))

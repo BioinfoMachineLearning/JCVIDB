@@ -17,5 +17,6 @@ urlpatterns = [
     path('file_upload/<int:context_id>', views.file_upload, name='file_upload'),
     path('download/<str:file_name>/', views.download_file, name='download_file'),
     path('preview_csv/', views.preview_csv, name='preview_csv'),
-    path('profile/', views.profile_view, name='profile_view')
+    path('profile/', views.profile_view, name='profile_view'),
+    path('delete_data/<int:id>', views.delete_data, name='delete_data'),
 ]
