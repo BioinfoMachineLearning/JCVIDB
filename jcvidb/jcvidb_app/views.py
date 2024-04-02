@@ -169,7 +169,7 @@ def details(request, id):
     aProteomics_data = Basic_data.objects.get(pk=id)
     if aProteomics_data.is_delete == 0:
         a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
-        file_data = aProteomics_data.file_data_set.all()
+        file_data = aProteomics_data.file_data_set.all().filter(is_delete=0)
         try:
             if aProteomics_data.createdBy_id == login_context['id']:
                 is_creator = True
@@ -349,7 +349,7 @@ def approve_data(request, id):
         if request.method == 'GET':
             aProteomics_data = Basic_data.objects.get(pk=id)
             a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
-            file_data = aProteomics_data.file_data_set.all()
+            file_data = aProteomics_data.file_data_set.all().filter(is_delete=0)
             for _file in file_data:
                 a_file_display = file_data_display_object()
                 a_file_display.id = _file.id
@@ -459,7 +459,7 @@ def update_posted_data(request, id):
     if is_creator:
         if request.method == 'GET':
             a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
-            file_data = aProteomics_data.file_data_set.all()
+            file_data = aProteomics_data.file_data_set.all().filter(is_delete=0)
             i = 0
             # file_display_array = []
             for _file in file_data:
@@ -505,17 +505,21 @@ def delete_data(request, id):
     login_context = set_session_values(request)
     a_file_data = File_data.objects.get(pk=id)
     prot_id = Basic_data.objects.get(pk=a_file_data.basic_data_id.id)
-    if prot_id.createdBy_id == login_context['id']:
-        if request.method == 'GET':
-            a_file_data.is_delete = 1
-            a_file_data.save()
-            col_data = a_file_data.column_data_set.all()
-            for cols in col_data:
-                ### if multiple important sheet is present
-                col_object = column_data.objects.get(id=cols.id)
-                cols.is_delete = 1
-                cols.save()
-        return redirect('../details/' + str(prot_id.id))
+    if a_file_data.is_delete ==0:
+        # prot_id = Basic_data.objects.get(pk=a_file_data.basic_data_id.id)
+        if prot_id.createdBy_id == login_context['id']:
+            if request.method == 'GET':
+                a_file_data.is_delete = 1
+                a_file_data.save()
+                col_data = a_file_data.column_data_set.all()
+                for cols in col_data:
+                    ### if multiple important sheet is present
+                    col_object = column_data.objects.get(id=cols.id)
+                    cols.is_delete = 1
+                    cols.save()
+            return redirect('../details/' + str(prot_id.id))
+        else:
+            return redirect('../details/' + str(prot_id.id))
     else:
         return redirect('../details/' + str(prot_id.id))
 
