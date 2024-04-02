@@ -1,0 +1,138 @@
+{% extends "./common/header.html" %}
+
+{% block content %}
+{% for msg in messages %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Failed!!</strong>   {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+{% endfor %}
+
+<h1 class="text-center"  > File Upload </h1>
+<hr>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" id="file_upload_form" class="form-container" enctype="multipart/form-data"  >
+                        {% csrf_token %}
+                        <div class="form-group">
+                           <label for="attachment"><h1>Attachment:</h1></label><br>
+                             <input class="form-control" type="file" id="attachment" name="attachment" >
+                        </div>
+                        <br>
+
+                        <br>
+                        <div class="text-center">
+                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                Add Column Informations (only for excel,csv or sheets)
+                                </button>
+                            <br>
+                            <br>
+                            <div class="collapse" id="collapseExample">
+
+                                <input class="control" type="number" id="sheet_index" name="sheet_index">
+                                <input class="control" type="number" id="col_index" name ="col_index">
+                                <input type="buton" value="Preview Headers" class="btn btn-info" readonly onclick="handleFile(document.getElementById('attachment'))">
+                            </div>
+                        </div>
+
+                    <div class="scrollable-div" name="previewHeaders" id="previewHeaders"></div>
+                    </form>
+                    <button type="submit" onclick="submitForm()" id="submitButton" class="btn btn-primary">Update</button>
+    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Note</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Would you like to proceed to add another file?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">yes</button>
+        <button type="button" class="btn btn-primary" id="pageBLink">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function submitForm() {
+    document.getElementById("file_upload_form").submit();
+}
+        function handleFile(input) {
+            var file = input.files[0];
+            var formData = new FormData();
+            formData.append('attachment', file);
+            formData.append('col_index', document.getElementById('col_index').value);
+            formData.append('sheet_index', document.getElementById('sheet_index').value);
+
+
+            fetch('{% url "preview_csv" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    displayHeaders(data.headers);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+         function displayHeaders(headers) {
+            var previewDiv = document.getElementById('previewHeaders');
+            previewDiv.innerHTML = '<h3>Preview Column Headers:</h3>';
+            previewDiv.class ='overflow-y:auto'
+             headers.forEach(function (header) {
+                 var checkbox = document.createElement('input');
+                 checkbox.setAttribute('type', 'checkbox');
+                 checkbox.setAttribute('id', 'checkbox_' + header.trim()); // Create unique ID for each checkbox
+                 checkbox.setAttribute('name', 'checkbox_' + header.trim()); // Create unique name for each checkbox
+                 var label = document.createElement('label');
+                 label.setAttribute('for', 'checkbox_' + header.trim()); // Set 'for' attribute to match checkbox ID
+                 label.textContent = header.trim();
+
+                 // Add checkbox and label to the preview div
+                 previewDiv.appendChild(checkbox);
+                 previewDiv.appendChild(label);
+                 previewDiv.appendChild(document.createElement('br')); // Add line break
+             });
+         }
+
+  document.getElementById('pageBLink').addEventListener('click', function() {
+    window.location.href = "../details/{{}}";
+  });
+var condition = {{added|lower }}; // Replace 'condition_from_django' with your variable name
+
+// If the condition is true, show the modal
+if (condition) {
+$('#exampleModal').modal('show');
+}
+</script>
+<body>
+{% endblock %}
+

@@ -30,19 +30,13 @@ from django.conf import settings
 
 def get_csv_file_data(_file_name, columns_to_select, _page_number, _header_num):
     if _header_num > 0:
-        # print(columns_to_select)
         upload_dir = os.path.join(UPLOAD_DIR, 'media')
-        # print(upload_dir)
         file_path = os.path.join(upload_dir, _file_name)
-        # print(file_path)
         if not os.path.exists(file_path):
             return []
         df = pd.read_excel(file_path, sheet_name=_page_number - 1, header=_header_num - 1)
         selected_columns_df = df.loc[:, columns_to_select]
         two_dimensional_array = selected_columns_df.values
-        # print(two_dimensional_array)
-        print(columns_to_select)
-
         my_2d_array = np.insert(two_dimensional_array, 0, columns_to_select, axis=0)
         return my_2d_array
     else:
@@ -55,7 +49,6 @@ def download_file(request, file_name):
     upload_dir = os.path.join(UPLOAD_DIR, 'media')
     # Check if the file exists
     file_path = os.path.join(upload_dir, file_name)
-    print(file_path)
     if not os.path.exists(file_path):
         return HttpResponseNotFound("File not found")
 
@@ -77,9 +70,7 @@ def set_session_values(request):
         login_context = {"id": request.session['user_id'],
                          "last_name": request.session['last_name'],
                          "admin": request.session['admin']}
-        print("admin")
-        print(request.session['admin'])
-        print(login_context['admin'])
+
         return login_context
     except:
         return None
@@ -120,16 +111,11 @@ def category_list_view(request,id):
 def main(request):
     try:
         if request.session['user_id'] and request.session['last_name']:
-            print("here")
-            print(request.session['user_id'])
-            print(request.session['last_name'])
             login_context = {"id": request.session['user_id'],
                              "last_name": request.session['last_name'],
                              "admin": request.session['admin']}
     except:
         login_context = None
-        print("no session found")
-    print(request)
     if request != "POST":
 
         aProteomics_data_list = Basic_data.objects.filter(approved=1)
@@ -181,40 +167,29 @@ def user_data_display_mapper(_user_data):
 def details(request, id):
     login_context = set_session_values(request)
     aProteomics_data = Basic_data.objects.get(pk=id)
-
     a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
-    print(aProteomics_data.id)
     file_data = aProteomics_data.file_data_set.all()
-    print(file_data)
     i = 0
     # file_display_array = []
     for _file in file_data:
-        print('count ' + str(i))
         i = i + 1
         a_file_display = file_data_display_object()
         a_file_display.id = _file.id
         a_file_display.file_ = _file.attachment
         col_arr = []
-        print(a_file_display.id)
         col_data = _file.column_data_set.all()
 
         for _column in col_data:
             ### if multiple important sheet is present
             col_object = column_data.objects.get(id=_column.id)
-            print(col_object)
             if len(col_object.column_names) > 0:
-                print('here')
                 array = get_csv_file_data(str(_file.attachment),
                                           col_object.column_names.replace("checkbox_", "").split(seperator),
                                           col_object.sheet_index,
                                           col_object.col_index)
 
                 a_file_display.display_data = array
-                # print(array)
-
         a_basic_data_display_object.add_file(a_file_display)
-
-    # print(len(a_basic_data_display_object.file_array[0].display_data))
     template = loader.get_template('details.html')
     context = {
         'prot_data': a_basic_data_display_object,
@@ -229,13 +204,10 @@ def search(request):
     results = Basic_data.objects.annotate(search=SearchVector('details', 'references', 'code', 'funding')).filter(
         search=name)
     results_list = results.filter(approved=1)
-    print(len(results_list))
 
     # name = request.GET.get('PGAN_name', '')
     # results_list = Basic_data.objects.filter(PGAN__icontains=name)
     # results_list = results_list.filter(approved=1)
-    # print(len(results_list))
-
     page_number = request.GET.get('page')
     paginator = Paginator(results_list, 10)
 
@@ -250,8 +222,6 @@ def search(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         results = paginator.page(paginator.num_pages)
-    print(page_number)
-    print(name)
     if name == "":
         name = request.GET.get('query')
     return render(request, 'search.html', {'results': results, 'search_query': name, 'login_context': login_details})
@@ -262,7 +232,6 @@ def create_User(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             password = form.cleaned_data['password']
-            print(password)
             hashed_password = make_password(password)
             form.instance.password = hashed_password
             form.save()
@@ -271,7 +240,6 @@ def create_User(request):
             form = RegistrationForm()
             return redirect('../')
         else:
-            print(form.errors)
             form = RegistrationForm(form)
             messages.error(request, 'Form is invalid!')
             return render(request, 'registration_form.html', {'form': form})
@@ -290,14 +258,11 @@ def sign_in(request):
     login_context = {}
     if request.method == 'POST':
         email = request.POST.get('email')
-        # print(email)
+
         password = request.POST.get('password')
-        # print(password)
         hashed_password = make_password(password)
         login_details = User.objects.get(email=email)
         if email == login_details.email and check_password(password, login_details.password):
-            # Set session ID
-            # print("success")
             request.session['user_id'] = login_details.id  # Assuming user ID is 1
             request.session['last_name'] = login_details.lastname
             if login_details.role_id == 3:
@@ -322,14 +287,11 @@ def sign_out(request):
         del request.session['last_name']
         del request.session['admin']
     redirect('../')
-    print('redirecting')
     # return render(request, 'sign_in.html', context=None)
     return redirect('../sign_in', context=None)
 
 
 def prot_post(request):
-    # print(request.session['user_id'])
-    # print(request.session['last_name'])
     login_details = set_session_values(request)
     if login_details != None:
         if request.method == 'POST':
@@ -340,7 +302,6 @@ def prot_post(request):
                 form = DataPostForm()
                 return redirect('../file_upload/' + str(instance_object))
             else:
-                print(form.errors)
                 form = DataPostForm(form)
                 messages.error(request, 'Form is invalid!')
                 return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
@@ -397,34 +358,25 @@ def approve_data(request, id):
                 a_basic_data_display_object.add_file(a_file_display)
             return render(request, 'approve_data.html',
                           {'prot_data': a_basic_data_display_object, 'login_context': login_details})
-
-
         else:
             item = Basic_data.objects.get(id=id)
-            print(item)
             form = ProtUpdateForm(instance=item)
             item.approved = 1
             item.save()
-            print('../approve_post')
             return redirect('../approve_post')
 
 
 @csrf_exempt
 def preview_csv(request):
-    # print(request.POST)
-    # print(request.FILES)
+
     if request.method == 'POST' and request.FILES.get('attachment'):
-        # print(request.POST)
+
         page = int(request.POST.get('sheet_index').strip()) - 1
-        # print(page)
         col_head = int(request.POST.get('col_index').strip()) - 1
-        # print(col_head)
         try:
             csv_file = request.FILES['attachment']
             df = pd.read_excel(csv_file, sheet_name=page, header=col_head)
             final_array = df.columns.to_list()
-            # print(final_array)
-            # print(len(final_array))
             return JsonResponse({'headers': final_array})
         except:
             return JsonResponse({'headers': []})
@@ -435,7 +387,6 @@ def get_processed_options(_dict_option):
     option_str = ''
 
     for key, value in _dict_option.items():
-        print(f"{key}: {value}")
         if key.startswith('checkbox_'):
             if len(option_str) == 0:
                 option_str = str(key)
@@ -452,23 +403,14 @@ def file_upload(request, context_id):
                       {'login_context': login_details, 'added': False})
     elif request.method == 'POST':
         post_data = request.POST
-        print(post_data.items)
-        # for key, value in post_data.items():
-        #     print(f"{key}: {value}")
-
-        print('equest.method == POST')
-        print(request.POST.get('col_index'))
-        print(request.POST.get('checkbox'))
 
         file_form = FileUploadPostForm(request.POST, request.FILES)
-
         column_form = ColumnDataPostForm(request.POST)
         if file_form.is_valid() and column_form.is_valid():
             # basic_data = Basic_data.objects.get(id=context_id)
 
             # a_File_data =  File_Data(basic_data_id=context_id,attachment=request.FILES[''])
             option_str = get_processed_options(post_data)
-            print(option_str)
             file_instance = file_form.save(context_id, True)
             column_instance = column_form.save(file_instance, True, option_str)
             return render(request, 'file_upload.html',
@@ -489,8 +431,6 @@ def profile_view(request):
     display_user_data.approved_posts = approved_post
     display_user_data.unapproved_posts = unapproved_post
 
-    print(len(display_user_data.approved_posts))
-    print(len(display_user_data.unapproved_posts))
     template = loader.get_template('profile.html')
     context = {
         'user_data': display_user_data,
@@ -503,7 +443,6 @@ def update_posted_data(request,id):
     aProteomics_data = Basic_data.objects.get(pk=id)
     if aProteomics_data.createdBy_id ==login_context['id']:
         if request.method =='GET':
-            print("get")
             a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
             file_data = aProteomics_data.file_data_set.all()
             i = 0
@@ -526,7 +465,7 @@ def update_posted_data(request,id):
                                                   col_object.col_index)
 
                         a_file_display.display_data = array
-                        # print(array)
+
                 a_basic_data_display_object.add_file(a_file_display)
             template = loader.get_template('update_basic_data.html')
             context = {
@@ -547,11 +486,9 @@ def update_posted_data(request,id):
         return redirect('../details/' + str(id))
 
 def delete_data(request,id):
-    print("delete_data")
     login_context = set_session_values(request)
     a_file_data = File_data.objects.get(pk=id)
     prot_id = Basic_data.objects.get(pk=a_file_data.basic_data_id.id)
-    print(prot_id.id)
     if prot_id.createdBy_id == login_context['id']:
         if request.method == 'GET':
             a_file_data.is_delete = 1
@@ -563,3 +500,24 @@ def delete_data(request,id):
                 cols.is_delete = 1
                 cols.save()
         return redirect('../details/' + str(prot_id.id))
+
+
+
+def file_update(request, context_id):
+    login_details = set_session_values(request)
+    if request.method == 'GET':
+        return render(request, 'file_upload.html',
+                      {'login_context': login_details, 'added': False})
+    elif request.method == 'POST':
+        post_data = request.POST
+        file_form = FileUploadPostForm(request.POST, request.FILES)
+
+        column_form = ColumnDataPostForm(request.POST)
+        if file_form.is_valid() and column_form.is_valid():
+            option_str = get_processed_options(post_data)
+            file_instance = file_form.save(context_id, True)
+            column_instance = column_form.save(file_instance, True, option_str)
+            return redirect('../details/' + str(context_id))
+        else:
+
+            return redirect('../details/' + str(context_id))

@@ -54,12 +54,21 @@
                     <label class="col-sm-10" id="id_cd">{{prot_data.creationDate}}</label>
                 </div>
             </div>
-
-
             <br>
             {% if  prot_data.file_array|length > 0 %}
-            <h4>Attachments</h4>
+            <div class="row">
+                <h4>Attachments </h4>
+                <button class="btn btn-success " style="margin-left: 20px;">
+                    <a  href="../file_update/{{ prot_data.id }}">
+                        <i  class= "fas fa-plus "></i>
+                    </a>
+                </button>
+                <hr>
+            </div>
+
             {% endif %}
+<hr>
+        <br>
 
             {% for x in prot_data.file_array %}
             <div class="form-group row">
@@ -70,14 +79,7 @@
                     <div class="col-sm-8">
                           <label id ="id_attachment" class="col-sm-10" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>
                     </div>
-                    <div class="col-sm-1">
-                        <button class="btn btn-primary ">
-                            <a    >
-                                <i  class= "fas fa-pen "></i>
-                            </a>
 
-                        </button>
-                    </div>
                     <div class="col-sm-1">
                         <button class="btn btn-danger ">
                             <a href="../delete_data/{{ x.id }}" >
