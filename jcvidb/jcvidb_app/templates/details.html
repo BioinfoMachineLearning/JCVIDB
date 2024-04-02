@@ -4,8 +4,17 @@
 
 
 <div class="col-sm-12 " >
-    <div class="text-center">
-            <h1 > Details</h1>
+    <div class="text-center  ">
+
+            <h1 > Details  {% if login_context.id  == prot_data.createdBy.id %}
+                <button class="btn btn-info" style="border: 2px solid black;">
+                    <a style="color:white;" href="../update/{{prot_data.id}}" >  Edit <i class="fas fa-pen"></i>  </a>
+                </button>
+
+        {% endif %}
+            </h1>
+
+
 
     </div>
     <hr>

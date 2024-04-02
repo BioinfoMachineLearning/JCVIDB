@@ -499,47 +499,50 @@ def profile_view(request):
     return HttpResponse(template.render(context, request))
 
 def update_posted_data(request,id):
-    print(request.method)
     login_context = set_session_values(request)
     aProteomics_data = Basic_data.objects.get(pk=id)
-    if request.method =='GET':
-        print("get")
-        a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
-        file_data = aProteomics_data.file_data_set.all()
-        i = 0
-        # file_display_array = []
-        for _file in file_data:
-            i = i + 1
-            a_file_display = file_data_display_object()
-            a_file_display.id = _file.id
-            a_file_display.file_ = _file.attachment
-            col_arr = []
-            col_data = _file.column_data_set.all()
+    if aProteomics_data.createdBy_id ==login_context['id']:
+        if request.method =='GET':
+            print("get")
+            a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
+            file_data = aProteomics_data.file_data_set.all()
+            i = 0
+            # file_display_array = []
+            for _file in file_data:
+                i = i + 1
+                a_file_display = file_data_display_object()
+                a_file_display.id = _file.id
+                a_file_display.file_ = _file.attachment
+                col_arr = []
+                col_data = _file.column_data_set.all()
 
-            for _column in col_data:
-                ### if multiple important sheet is present
-                col_object = column_data.objects.get(id=_column.id)
-                if len(col_object.column_names) > 0:
-                    array = get_csv_file_data(str(_file.attachment),
-                                              col_object.column_names.replace("checkbox_", "").split(seperator),
-                                              col_object.sheet_index,
-                                              col_object.col_index)
+                for _column in col_data:
+                    ### if multiple important sheet is present
+                    col_object = column_data.objects.get(id=_column.id)
+                    if len(col_object.column_names) > 0:
+                        array = get_csv_file_data(str(_file.attachment),
+                                                  col_object.column_names.replace("checkbox_", "").split(seperator),
+                                                  col_object.sheet_index,
+                                                  col_object.col_index)
 
-                    a_file_display.display_data = array
-                    # print(array)
-            a_basic_data_display_object.add_file(a_file_display)
-        template = loader.get_template('update_basic_data.html')
-        context = {
-            'prot_data': a_basic_data_display_object,
-            'login_context': login_context,
-        }
-        return HttpResponse(template.render(context, request))
-    elif request.method=='POST' :
-        form = DataPostForm(request.POST)
-        if form.is_valid():
-            aProteomics_data.references = form.cleaned_data['references']
-            aProteomics_data.funding =form.cleaned_data['funding']
-            aProteomics_data.details = form.cleaned_data['details']
-            aProteomics_data.save()
-            return redirect('../details/'+str(id))
+                        a_file_display.display_data = array
+                        # print(array)
+                a_basic_data_display_object.add_file(a_file_display)
+            template = loader.get_template('update_basic_data.html')
+            context = {
+                'prot_data': a_basic_data_display_object,
+                'login_context': login_context,
+            }
+            return HttpResponse(template.render(context, request))
+        elif request.method=='POST' :
+            form = DataPostForm(request.POST)
+            if form.is_valid():
+                aProteomics_data.references = form.cleaned_data['references']
+                aProteomics_data.funding =form.cleaned_data['funding']
+                aProteomics_data.details = form.cleaned_data['details']
+                aProteomics_data.save()
+                return redirect('../details/'+str(id))
+
+    else:
+        return redirect('../details/' + str(id))
 
