@@ -11,7 +11,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
-from .basic_data_display_object import file_data_display_object, basic_data_display_object,    user_data_display
+from .basic_data_display_object import file_data_display_object, basic_data_display_object, user_data_display
 from .models import User, Basic_data, column_data, File_data
 from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
@@ -83,7 +83,7 @@ def set_session_values(request):
 #         for chunk in uploaded_file.chunks():
 #             destination.write(chunk)
 
-def category_list_view(request,id):
+def category_list_view(request, id):
     try:
         if request.session['user_id'] and request.session['last_name']:
             login_context = {"id": request.session['user_id'],
@@ -103,7 +103,8 @@ def category_list_view(request,id):
         except EmptyPage:
             aProteomics_data = paginator.page(paginator.num_pages)
 
-        return render(request, 'categories.html', {'aProteomics_data': aProteomics_data, 'login_context': login_context})
+        return render(request, 'categories.html',
+                      {'aProteomics_data': aProteomics_data, 'login_context': login_context})
 
 
 def main(request):
@@ -166,12 +167,14 @@ def details(request, id):
     is_creator = False
     login_context = set_session_values(request)
     aProteomics_data = Basic_data.objects.get(pk=id)
-    if aProteomics_data.is_delete ==0:
+    if aProteomics_data.is_delete == 0:
         a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
         file_data = aProteomics_data.file_data_set.all()
-
-        if aProteomics_data.createdBy_id ==login_context['id']:
-            is_creator = True
+        try:
+            if aProteomics_data.createdBy_id == login_context['id']:
+                is_creator = True
+        except:
+            is_creator = False
         i = 0
         # file_display_array = []
         for _file in file_data:
@@ -197,11 +200,12 @@ def details(request, id):
         context = {
             'prot_data': a_basic_data_display_object,
             'login_context': login_context,
-            'is_creator':is_creator
+            'is_creator': is_creator
         }
         return HttpResponse(template.render(context, request))
     else:
         return redirect('../')
+
 
 def search(request):
     login_details = set_session_values(request)
@@ -373,7 +377,6 @@ def approve_data(request, id):
 
 @csrf_exempt
 def preview_csv(request):
-
     if request.method == 'POST' and request.FILES.get('attachment'):
 
         page = int(request.POST.get('sheet_index').strip()) - 1
@@ -443,14 +446,18 @@ def profile_view(request):
     }
     return HttpResponse(template.render(context, request))
 
-def update_posted_data(request,id):
+
+def update_posted_data(request, id):
     login_context = set_session_values(request)
     aProteomics_data = Basic_data.objects.get(pk=id)
-    is_creator=False
-    if aProteomics_data.createdBy_id ==login_context['id']:
-        is_creator = True
+    is_creator = False
+    try:
+        if aProteomics_data.createdBy_id == login_context['id']:
+            is_creator = True
+    except:
+        is_creator = False
     if is_creator:
-        if request.method =='GET':
+        if request.method == 'GET':
             a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
             file_data = aProteomics_data.file_data_set.all()
             i = 0
@@ -481,19 +488,20 @@ def update_posted_data(request,id):
                 'login_context': login_context,
             }
             return HttpResponse(template.render(context, request))
-        elif request.method=='POST' :
+        elif request.method == 'POST':
             form = DataPostForm(request.POST)
             if form.is_valid():
                 aProteomics_data.references = form.cleaned_data['references']
-                aProteomics_data.funding =form.cleaned_data['funding']
+                aProteomics_data.funding = form.cleaned_data['funding']
                 aProteomics_data.details = form.cleaned_data['details']
                 aProteomics_data.save()
-                return redirect('../details/'+str(id))
+                return redirect('../details/' + str(id))
 
     else:
         return redirect('../details/' + str(id))
 
-def delete_data(request,id):
+
+def delete_data(request, id):
     login_context = set_session_values(request)
     a_file_data = File_data.objects.get(pk=id)
     prot_id = Basic_data.objects.get(pk=a_file_data.basic_data_id.id)
@@ -512,11 +520,10 @@ def delete_data(request,id):
         return redirect('../details/' + str(prot_id.id))
 
 
-
 def file_update(request, context_id):
     login_details = set_session_values(request)
     aProteomics_data = Basic_data.objects.get(pk=id)
-    if aProteomics_data.createdBy_id ==login_details['id']:
+    if aProteomics_data.createdBy_id == login_details['id']:
         if request.method == 'GET':
             return render(request, 'file_upload.html',
                           {'login_context': login_details, 'added': False})

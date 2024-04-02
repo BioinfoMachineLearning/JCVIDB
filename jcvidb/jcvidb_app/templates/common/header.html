@@ -23,6 +23,7 @@
          a {
             text-decoration: none;
             color: inherit;
+             font-weight: bold;
         }
         nav ul li.active a {
     /* Add your styles for the active link */
@@ -76,15 +77,16 @@
           <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
             {{ login_context.last_name}}<span class="caret"></span>
           </button>
-          <ul class="dropdown-menu">
-            <li><a href="/profile">profile</a></li>
-            <li><a href="/post_data">post</a></li>
-            <li><a href="/sign_out">sign out</a></li>
+          <ul class="dropdown-menu"  >
+            <li style="margin: 5px;"><a href="/profile">Profile</a></li>
+            <li style="margin: 5px;" ><a href="/post_data">Post a data</a></li>
+            <li style="margin: 5px;"><a href="/sign_out">Sign out</a></li>
 
              {% if login_context.admin  %}
-
-            <li>Admin</li>
-            <li><a href="/approve_post">Approve Post</a></li>
+              <hr>
+            <li  style="margin: 5px;">Admin</li>
+              <hr>
+            <li style="margin: 5px;"><a href="/approve_post">Approve Post</a></li>
 <!--            <li><a href="">Make Admin</a></li>-->
 
             {% endif %}
