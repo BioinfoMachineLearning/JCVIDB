@@ -11,9 +11,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
-
-from .basic_data_display_object import file_data_display_object, col_data_display_object, basic_data_display_object, \
-    user_data_display
+from .basic_data_display_object import file_data_display_object, basic_data_display_object,    user_data_display
 from .models import User, Basic_data, column_data, File_data
 from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
