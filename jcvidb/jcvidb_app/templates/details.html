@@ -13,9 +13,6 @@
 
         {% endif %}
             </h1>
-
-
-
     </div>
     <hr>
 
@@ -58,11 +55,13 @@
             {% if  prot_data.file_array|length > 0 %}
             <div class="row">
                 <h4>Attachments </h4>
+                {% if login_context.id  == prot_data.createdBy.id %}
                 <button class="btn btn-success " style="margin-left: 20px;">
                     <a  href="../file_update/{{ prot_data.id }}">
                         <i  class= "fas fa-plus "></i>
                     </a>
                 </button>
+                {% endif %}
                 <hr>
             </div>
 
@@ -81,11 +80,13 @@
                     </div>
 
                     <div class="col-sm-1">
+                        {% if login_context.id  == prot_data.createdBy.id %}
                         <button class="btn btn-danger ">
                             <a href="../delete_data/{{ x.id }}" >
                                 <i style=" text-decoration: none;" class="fas fa-trash"></i>
                             </a>
                         </button>
+                        {% endif %}
                     </div>
 
 

@@ -5,7 +5,7 @@
 
 <div class="col-sm-12 " >
     <div class="text-center">
-            <h1 > Update</h1>
+            <h1 > Update Form</h1>
 
     </div>
     <hr>
@@ -56,48 +56,48 @@
 
             </div>
             <br>
-            {% if  prot_data.file_array|length > 0 %}
-            <h4>Attachments</h4>
-            {% endif %}
+<!--            {% if  prot_data.file_array|length > 0 %}-->
+<!--            <h4>Attachments</h4>-->
+<!--            {% endif %}-->
 
-            {% for x in prot_data.file_array %}
-            <div class="form-group row">
+<!--            {% for x in prot_data.file_array %}-->
+<!--            <div class="form-group row">-->
 
-                <div class="col-sm-10">
-                    <label class="control-label col-sm-2" for="id_attachment"><li>Attachment</li></label>
-                    {% if x.file_ %}
-                    <label id ="id_attachment" class="col-sm-8" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>
-                    {% else %}
-                    <p>No file available for download.</p>
-                    {% endif %}
-                </div>
-                 <div class="modal-body">
-                    <div class="panel panel-default">
-                        <div class="panel-body table-responsive">
-                            <table class="table table-bordered" id={{x.id}}>
-                               {% if  x.display_data|length > 0 %}
-                                <h4> File Info</h4>
-                                {% endif %}
-                               {% for tb in x.display_data %}
+<!--                <div class="col-sm-10">-->
+<!--                    <label class="control-label col-sm-2" for="id_attachment"><li>Attachment</li></label>-->
+<!--                    {% if x.file_ %}-->
+<!--                    <label id ="id_attachment" class="col-sm-8" ><a href="{% url 'download_file' file_name=x.file_ %}">  {{ x.file_ }}</a> </label>-->
+<!--                    {% else %}-->
+<!--                    <p>No file available for download.</p>-->
+<!--                    {% endif %}-->
+<!--                </div>-->
+<!--&lt;!&ndash;                 <div class="modal-body">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="panel panel-default">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <div class="panel-body table-responsive">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <table class="table table-bordered" id={{x.id}}>&ndash;&gt;-->
+<!--&lt;!&ndash;                               {% if  x.display_data|length > 0 %}&ndash;&gt;-->
+<!--&lt;!&ndash;                                <h4> File Info</h4>&ndash;&gt;-->
+<!--&lt;!&ndash;                                {% endif %}&ndash;&gt;-->
+<!--&lt;!&ndash;                               {% for tb in x.display_data %}&ndash;&gt;-->
 
-                                <tbody>
+<!--&lt;!&ndash;                                <tbody>&ndash;&gt;-->
 
-                                    <tr>
-                                        {% for i in tb %}
+<!--&lt;!&ndash;                                    <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        {% for i in tb %}&ndash;&gt;-->
 
 
-                                            <td>{{ i }}</td>
+<!--&lt;!&ndash;                                            <td>{{ i }}</td>&ndash;&gt;-->
 
-                                        {% endfor %}
-                                    </tr>
-                                </tbody>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+<!--&lt;!&ndash;                                        {% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;                                {% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;                            </table>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--            </div>-->
+<!--            {% endfor %}-->
 
 
 

@@ -93,7 +93,7 @@ def category_list_view(request,id):
         login_context = None
     if request != "POST":
 
-        aProteomics_data_list = Basic_data.objects.filter(approved=1).filter(type_id=id)
+        aProteomics_data_list = Basic_data.objects.filter(approved=1).filter(type_id=id).filter(is_delete=0)
         paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
@@ -116,7 +116,7 @@ def main(request):
         login_context = None
     if request != "POST":
 
-        aProteomics_data_list = Basic_data.objects.filter(approved=1)
+        aProteomics_data_list = Basic_data.objects.filter(approved=1).filter(is_delete=0)
         paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
@@ -163,44 +163,51 @@ def user_data_display_mapper(_user_data):
 
 
 def details(request, id):
+    is_creator = False
     login_context = set_session_values(request)
     aProteomics_data = Basic_data.objects.get(pk=id)
-    a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
-    file_data = aProteomics_data.file_data_set.all()
-    i = 0
-    # file_display_array = []
-    for _file in file_data:
-        i = i + 1
-        a_file_display = file_data_display_object()
-        a_file_display.id = _file.id
-        a_file_display.file_ = _file.attachment
-        col_arr = []
-        col_data = _file.column_data_set.all()
+    if aProteomics_data.is_delete ==0:
+        a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
+        file_data = aProteomics_data.file_data_set.all()
 
-        for _column in col_data:
-            ### if multiple important sheet is present
-            col_object = column_data.objects.get(id=_column.id)
-            if len(col_object.column_names) > 0:
-                array = get_csv_file_data(str(_file.attachment),
-                                          col_object.column_names.replace("checkbox_", "").split(seperator),
-                                          col_object.sheet_index,
-                                          col_object.col_index)
+        if aProteomics_data.createdBy_id ==login_context['id']:
+            is_creator = True
+        i = 0
+        # file_display_array = []
+        for _file in file_data:
+            i = i + 1
+            a_file_display = file_data_display_object()
+            a_file_display.id = _file.id
+            a_file_display.file_ = _file.attachment
+            col_arr = []
+            col_data = _file.column_data_set.all()
 
-                a_file_display.display_data = array
-        a_basic_data_display_object.add_file(a_file_display)
-    template = loader.get_template('details.html')
-    context = {
-        'prot_data': a_basic_data_display_object,
-        'login_context': login_context,
-    }
-    return HttpResponse(template.render(context, request))
+            for _column in col_data:
+                ### if multiple important sheet is present
+                col_object = column_data.objects.get(id=_column.id)
+                if len(col_object.column_names) > 0:
+                    array = get_csv_file_data(str(_file.attachment),
+                                              col_object.column_names.replace("checkbox_", "").split(seperator),
+                                              col_object.sheet_index,
+                                              col_object.col_index)
 
+                    a_file_display.display_data = array
+            a_basic_data_display_object.add_file(a_file_display)
+        template = loader.get_template('details.html')
+        context = {
+            'prot_data': a_basic_data_display_object,
+            'login_context': login_context,
+            'is_creator':is_creator
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        return redirect('../')
 
 def search(request):
     login_details = set_session_values(request)
     name = request.GET.get('PGAN_name', '')
     results = Basic_data.objects.annotate(search=SearchVector('details', 'references', 'code', 'funding')).filter(
-        search=name)
+        search=name).filter(is_delete=0)
     results_list = results.filter(approved=1)
 
     # name = request.GET.get('PGAN_name', '')
@@ -315,7 +322,7 @@ def appprove_post(request):
     login_context = set_session_values(request)
 
     if request != "POST":
-        aProteomics_data_list = Basic_data.objects.filter(approved=0)
+        aProteomics_data_list = Basic_data.objects.filter(approved=0).filter(is_delete=0)
         paginator = Paginator(aProteomics_data_list, 10)
         page_number = request.GET.get('page')
         try:
@@ -424,8 +431,8 @@ def profile_view(request):
     display_user_data = user_data_display_mapper(user_data)
     # Basic_data.objects.filter(approved=1)
     all_post = Basic_data.objects.filter(createdBy_id=user_data)
-    approved_post = all_post.filter(approved=1)
-    unapproved_post = all_post.filter(approved=0)
+    approved_post = all_post.filter(approved=1).filter(is_delete=0)
+    unapproved_post = all_post.filter(approved=0).filter(is_delete=0)
     display_user_data.approved_posts = approved_post
     display_user_data.unapproved_posts = unapproved_post
 
@@ -439,7 +446,10 @@ def profile_view(request):
 def update_posted_data(request,id):
     login_context = set_session_values(request)
     aProteomics_data = Basic_data.objects.get(pk=id)
+    is_creator=False
     if aProteomics_data.createdBy_id ==login_context['id']:
+        is_creator = True
+    if is_creator:
         if request.method =='GET':
             a_basic_data_display_object = basic_data_display_mapper(aProteomics_data)
             file_data = aProteomics_data.file_data_set.all()
@@ -498,24 +508,30 @@ def delete_data(request,id):
                 cols.is_delete = 1
                 cols.save()
         return redirect('../details/' + str(prot_id.id))
+    else:
+        return redirect('../details/' + str(prot_id.id))
 
 
 
 def file_update(request, context_id):
     login_details = set_session_values(request)
-    if request.method == 'GET':
-        return render(request, 'file_upload.html',
-                      {'login_context': login_details, 'added': False})
-    elif request.method == 'POST':
-        post_data = request.POST
-        file_form = FileUploadPostForm(request.POST, request.FILES)
+    aProteomics_data = Basic_data.objects.get(pk=id)
+    if aProteomics_data.createdBy_id ==login_details['id']:
+        if request.method == 'GET':
+            return render(request, 'file_upload.html',
+                          {'login_context': login_details, 'added': False})
+        elif request.method == 'POST':
+            post_data = request.POST
+            file_form = FileUploadPostForm(request.POST, request.FILES)
 
-        column_form = ColumnDataPostForm(request.POST)
-        if file_form.is_valid() and column_form.is_valid():
-            option_str = get_processed_options(post_data)
-            file_instance = file_form.save(context_id, True)
-            column_instance = column_form.save(file_instance, True, option_str)
-            return redirect('../details/' + str(context_id))
+            column_form = ColumnDataPostForm(request.POST)
+            if file_form.is_valid() and column_form.is_valid():
+                option_str = get_processed_options(post_data)
+                file_instance = file_form.save(context_id, True)
+                column_instance = column_form.save(file_instance, True, option_str)
+                return redirect('../details/' + str(context_id))
+            else:
+
+                return redirect('../details/' + str(context_id))
         else:
-
             return redirect('../details/' + str(context_id))
