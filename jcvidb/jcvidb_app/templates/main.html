@@ -31,15 +31,15 @@
 </head>
 
 {% block content %}
-<!--{% for msg in messages %}-->
-<!--<div class="alert alert-success alert-dismissible fade show" role="alert">-->
-<!--  <strong>Success!!</strong>   {{ msg }}-->
-<!--  <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-<!--    <span aria-hidden="true">&times;</span>-->
-<!--  </button>-->
-<!--</div>-->
+{% for msg in messages %}
+<div class="alert alert-{{ msg.extra_tags }}" id="myAlert"  role="alert" >
+  <strong>{{ msg.extra_tags }}!!</strong>   {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
-<!--{% endfor %}-->
+{% endfor %}
 <div class="row">
     <table class="table" style="margin: 20px;">
       <thead>

@@ -1,15 +1,15 @@
 {% extends "./common/header.html" %}
 
 {% block content %}
-<!--{% for msg in messages %}-->
-<!--<div class="alert alert-danger alert-dismissible fade show" role="alert">-->
-<!--  <strong>Failed!!</strong>   {{ msg }}-->
-<!--  <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-<!--    <span aria-hidden="true">&times;</span>-->
-<!--  </button>-->
-<!--</div>-->
+{% for msg in messages %}
+<div class="alert alert-{{ msg.extra_tags }}" id="myAlert"  role="alert" >
+  <strong>{{ msg.extra_tags }}!!</strong>   {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
-<!--{% endfor %}-->
+{% endfor %}
 
 <h1 class="text-center"  > File Upload </h1>
 <hr>
@@ -28,8 +28,8 @@
 
                         <br>
                         <div class="text-center">
-                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-  Add Column Informations (only for excel,csv or sheets)
+                                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+   <i class="fa fa-plus" aria-hidden="true" ></i> Add Column Informations (only for excel,csv or sheets)
   </button>
                             <br>
                             <br>
@@ -43,7 +43,8 @@
 
                     <div class="scrollable-div" name="previewHeaders" id="previewHeaders"></div>
                     </form>
-                    <button type="submit" onclick="submitForm()" id="submitButton" class="btn btn-primary">Register</button>
+                    <button style="float: right;" type="submit" class="btn btn-warning"><i class="fa fa-home" aria-hidden="true"> Main Menu</i> </button>
+                    <button style="float: left;" type="submit" onclick="submitForm()" id="submitButton" class="btn btn-success"><i class="fa fa-upload" aria-hidden="true">Upload</i></button>
     </div>
             </div>
         </div>
@@ -144,3 +145,11 @@ $('#exampleModal').modal('show');
 <body>
 {% endblock %}
 
+    <script>
+    var alert = document.getElementById('myAlert');
+
+    // Hide the alert after 5 seconds (5000 milliseconds)
+    setTimeout(function() {
+      alert.style.display = 'none';
+    }, 1000);
+    </script>

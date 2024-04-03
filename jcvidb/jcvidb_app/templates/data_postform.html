@@ -1,16 +1,17 @@
 {% extends "./common/header.html" %}
 
 {% block content %}
-<!--{% for msg in messages %}-->
-<!--<div class="alert alert-danger alert-dismissible fade show" role="alert">-->
-<!--  <strong>Failed!!</strong>   {{ msg }}-->
-<!--  <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-<!--    <span aria-hidden="true">&times;</span>-->
-<!--  </button>-->
-<!--</div>-->
+{% for msg in messages %}
+<div class="alert alert-{{ msg.extra_tags }}" id="myAlert"  role="alert" >
+  <strong>{{ msg.extra_tags }}!!</strong>   {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
-<!--{% endfor %}-->
+{% endfor %}
 
+<br>
 <h1 class="text-center"  > Post Details</h1>
 <hr>
 <div class="container">
@@ -43,9 +44,11 @@
                                     <option value="4">Physical-Properties</option>
                                 </select>
                         </div>
+                        <div style="text-align: center;">
 
-                        <button type="submit" id="submitButton" class="btn btn-primary">Register</button>
+                        <button type="submit" id="submitButton" class="btn btn-success">Submit</button>
                         <input type="text" id="id_createdBy" hidden="true" name="createdBy" value="{{ login_context.id }}">
+                        </div>
                     </form>
                 </div>
             </div>

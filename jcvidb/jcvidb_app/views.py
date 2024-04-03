@@ -307,12 +307,12 @@ def prot_post(request):
             form = DataPostForm(request.POST, request.FILES)
             if form.is_valid():
                 instance_object = form.save(sessionid=request.session['user_id']).id
-                messages.success(request, 'Form submitted successfully!')
+                messages.success(request, 'Form submitted successfully!', extra_tags='success')
                 form = DataPostForm()
                 return redirect('../file_upload/' + str(instance_object))
             else:
                 form = DataPostForm(form)
-                messages.error(request, 'Form is invalid!')
+                messages.error(request, 'Form is invalid!', extra_tags='danger')
                 return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
         else:
             form = DataPostForm()
@@ -421,9 +421,13 @@ def file_upload(request, context_id):
             option_str = get_processed_options(post_data)
             file_instance = file_form.save(context_id, True)
             column_instance = column_form.save(file_instance, True, option_str)
+
+            messages.error(request, 'File uploaded successfully!!', extra_tags='success')
             return render(request, 'file_upload.html',
                           {'login_context': login_details, 'added': True})
         else:
+
+            messages.error(request, 'File failed to upload!!', extra_tags='danger')
             return render(request, 'file_upload.html',
                           {'login_context': login_details, 'errors': file_form.errors, 'added': False})
 
