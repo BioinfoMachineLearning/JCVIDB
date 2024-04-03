@@ -42,7 +42,15 @@
 
 
 <body>
+{% for msg in messages %}
+<div class="alert alert-{{ msg.extra_tags }}" id="myAlert"  role="alert" >
+  <strong>{{ msg.extra_tags }}!!</strong>   {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
+{% endfor %}
 <div class="row" style="background: #9cd7ff">
   <div class="col-sm-6"  style="padding: 50px;">
     <div class="text-left" style="background: #9cd7ff">

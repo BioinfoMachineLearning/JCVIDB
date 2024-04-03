@@ -285,8 +285,9 @@ def sign_in(request):
             return redirect('../')  # Assuming 'dashboard' is the name of the URL pattern for the dashboard page
         else:
             # Display error message (optional)
-            messages.error(request, 'Invalid username or password')
+            messages.error(request, 'Invalid username or password',extra_tags='danger')
 
+        messages.success(request, "Sucessfully Signed-In!!", extra_tags='success')
     return render(request, 'sign_in.html', context=login_context)
 
 
@@ -319,6 +320,8 @@ def prot_post(request):
             return render(request, 'data_postform.html', {'form': form, 'login_context': login_details})
     else:
         redirect('./')
+
+        messages.error(request, "Please login!!", extra_tags='danger')
         return render(request, 'main.html')
 
 
@@ -372,6 +375,8 @@ def approve_data(request, id):
             form = ProtUpdateForm(instance=item)
             item.approved = 1
             item.save()
+
+            messages.success(request, "File has been approved", extra_tags='success')
             return redirect('../approve_post')
 
 
@@ -499,9 +504,12 @@ def update_posted_data(request, id):
                 aProteomics_data.funding = form.cleaned_data['funding']
                 aProteomics_data.details = form.cleaned_data['details']
                 aProteomics_data.save()
+                messages.success(request,"Data has been updated successfully",extra_tags='success')
                 return redirect('../details/' + str(id))
 
     else:
+
+        messages.error(request, "Access Denied", extra_tags='danger')
         return redirect('../details/' + str(id))
 
 
@@ -521,16 +529,21 @@ def delete_data(request, id):
                     col_object = column_data.objects.get(id=cols.id)
                     cols.is_delete = 1
                     cols.save()
+            messages.success(request,"File has deleted successfully!!",extra_tags='success')
             return redirect('../details/' + str(prot_id.id))
         else:
+
+            messages.error(request, "Access Denied", extra_tags='danger')
             return redirect('../details/' + str(prot_id.id))
     else:
+
+        messages.error(request, "File does not Exists!", extra_tags='danger')
         return redirect('../details/' + str(prot_id.id))
 
 
 def file_update(request, context_id):
     login_details = set_session_values(request)
-    aProteomics_data = Basic_data.objects.get(pk=id)
+    aProteomics_data = Basic_data.objects.get(pk=context_id)
     if aProteomics_data.createdBy_id == login_details['id']:
         if request.method == 'GET':
             return render(request, 'file_upload.html',
@@ -544,9 +557,14 @@ def file_update(request, context_id):
                 option_str = get_processed_options(post_data)
                 file_instance = file_form.save(context_id, True)
                 column_instance = column_form.save(file_instance, True, option_str)
+
+                messages.success(request, "File Updated Sucessfully", extra_tags='success')
                 return redirect('../details/' + str(context_id))
+
             else:
 
                 return redirect('../details/' + str(context_id))
         else:
+
+            messages.error(request, "Access Denied", extra_tags='danger')
             return redirect('../details/' + str(context_id))
