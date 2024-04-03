@@ -94,7 +94,7 @@ DATABASES = {
         'PORT': '5432',        # or your PostgreSQL server's port
     }
 }
-
+ALLOWED_HOSTS = ['http://128.206.232.18/', 'https://calla.rnet.missouri.edu/jcvidb/']
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
