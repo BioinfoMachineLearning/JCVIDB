@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'rsr3gt',
         'PASSWORD': 'Cheng-2024-Postgres',
-        'HOST': 'localhost',   # or your PostgreSQL server's IP address
+        'HOST': '127.0.0.1',   # or your PostgreSQL server's IP address
         'PORT': '5432',        # or your PostgreSQL server's port
     }
 }
