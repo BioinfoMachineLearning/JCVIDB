@@ -19,7 +19,7 @@ from .registration_form import RegistrationForm
 from django.contrib.postgres.search import SearchVector
 
 # UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
-UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
+UPLOAD_DIR = '/bml/jcvidb/'
 seperator = "_$_$_"
 from django.http import HttpResponseNotFound, FileResponse
 import os
