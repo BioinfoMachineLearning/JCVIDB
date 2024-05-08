@@ -17,6 +17,10 @@ from .datapost_form import DataPostForm, FileUploadPostForm, ColumnDataPostForm
 from .protupdate_form import ProtUpdateForm
 from .registration_form import RegistrationForm
 from django.contrib.postgres.search import SearchVector
+from pathlib import Path
+import os
+import sys
+
 
 # UPLOAD_DIR = '/Users/rajshekhorroy/JCVIDB/jcvidb/'
 UPLOAD_DIR = '/bml/jcvidb/'
@@ -25,11 +29,11 @@ from django.http import HttpResponseNotFound, FileResponse
 import os
 from django.conf import settings
 
-
+UPLOAD_DIR= settings.MEDIA_ROOT
 def get_csv_file_data(_file_name, columns_to_select, _page_number, _header_num):
     if _header_num > 0:
-        upload_dir = os.path.join(UPLOAD_DIR, 'media')
-        file_path = os.path.join(upload_dir, _file_name)
+        # upload_dir = os.path.join(UPLOAD_DIR, 'media')
+        file_path = os.path.join(UPLOAD_DIR, _file_name)
         if not os.path.exists(file_path):
             return []
         df = pd.read_excel(file_path, sheet_name=_page_number - 1, header=_header_num - 1)
@@ -44,9 +48,9 @@ def get_csv_file_data(_file_name, columns_to_select, _page_number, _header_num):
 def download_file(request, file_name):
     # Define the directory where the files are stored
     # upload_dir = os.path.join(settings.BASE_DIR, 'media')
-    upload_dir = os.path.join(UPLOAD_DIR, 'media')
+    # upload_dir = os.path.join(UPLOAD_DIR, 'media')
     # Check if the file exists
-    file_path = os.path.join(upload_dir, file_name)
+    file_path = os.path.join(UPLOAD_DIR, file_name)
     if not os.path.exists(file_path):
         return HttpResponseNotFound("File not found")
 

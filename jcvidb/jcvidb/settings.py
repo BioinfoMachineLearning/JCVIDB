@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_bootstrap_icons',
     "corsheaders",
     'rest_framework',
+    'django_forms_bootstrap'
 ]
 
 MIDDLEWARE = [
