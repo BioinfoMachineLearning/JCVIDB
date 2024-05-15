@@ -1,0 +1,55 @@
+version: '3'
+
+# services:
+#   web:
+#     build: .
+#     command: python manage.py runserver 0.0.0.0:8000
+#     volumes:
+#       - .:/code
+#     ports:
+#       - "8000:8000"
+#     depends_on:
+#       - db
+#   db:
+#     image: postgres
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       POSTGRES_DB: "db"
+#       POSTGRES_HOST_AUTH_METHOD: "trust"
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=default
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=localhost
+      
+  migration:
+    image: postgres:15
+    command: python jcvidb/manage.py migrate --noinput
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+ 
+  web:
+    build: .
+    command: python jcvidb/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - migration
+    environment:
+      - DB_HOST=db
+volumes:
+  postgres_data:
+
+

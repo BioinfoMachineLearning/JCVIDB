@@ -1,3 +1,7 @@
 jcvidb_env/
 uploads/
 media/
+__pycache__/
+jcvidb/__pycache__/
+jcvidb_app/__pycache__/
+env
