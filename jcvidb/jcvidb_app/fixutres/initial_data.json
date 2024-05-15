@@ -1,0 +1,67 @@
+[
+  {
+    "model": "jcvidb_app.Data_type",
+    "pk": 4,
+    "fields": {
+      "name": "Physical-Properties",
+      "code": "Pp",
+      "is_delete": "0"
+    }
+  },
+  {
+    "model": "jcvidb_app.Data_type",
+    "pk": 3,
+    "fields": {
+      "name": "Interactomes",
+      "code": "I",
+      "is_delete": "0"
+    }
+  },
+  {
+    "model": "jcvidb_app.Data_type",
+    "pk": 2,
+    "fields": {
+      "name": "Trans-proteomics",
+      "code": "Tp",
+      "is_delete": "0"
+    }
+  },
+  {
+    "model": "jcvidb_app.Data_type",
+    "pk": 1,
+    "fields": {
+      "id": "1",
+      "name": "Proteomics",
+      "code": "Pr",
+      "is_delete": "0"
+    }
+  },
+  {
+    "model": "jcvidb_app.Role",
+    "pk": 1,
+    "fields": {
+      "name": "SuperUser",
+      "clearance": "10",
+      "is_delete": "0"
+    }
+  },
+  {
+    "model": "jcvidb_app.Role",
+    "pk": 2,
+    "fields": {
+      "name": "basic",
+      "clearance": "1",
+      "is_delete": "0"
+    }
+  },
+  {
+    "model": "jcvidb_app.Role",
+    "pk": 3,
+    "fields": {
+      "id": "3",
+      "name": "Reviewer",
+      "clearance": "6",
+      "is_delete": "0"
+    }
+  }
+]

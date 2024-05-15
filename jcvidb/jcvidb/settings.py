@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-lbnc6xdkfc9713_j+7r1mnvs@xzp!kqqsf#@vmo%=fd_c5od8a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0','127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8081','http://localhost:8080'
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_bootstrap_icons',
     "corsheaders",
     'rest_framework',
+    'django_forms_bootstrap'
 ]
 
 MIDDLEWARE = [
@@ -87,10 +88,10 @@ WSGI_APPLICATION = "jcvidb.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'jcvidb2',
-        'USER': 'royc487',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',   # or your PostgreSQL server's IP address
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': os.getenv('DB_HOST', 'localhost'),   # or your PostgreSQL server's IP address
         'PORT': '5432',        # or your PostgreSQL server's port
     }
 }
