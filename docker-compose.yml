@@ -30,15 +30,17 @@ services:
       - POSTGRES_HOST=localhost
       
   migration:
-    image: postgres:15
+    image: rajshekhorroy/jcvidb_web
     command: python jcvidb/manage.py migrate --noinput
     volumes:
       - .:/app
     depends_on:
       - db
+      - web
  
   web:
     build: .
+    image: rajshekhorroy/jcvidb_web
     command: python jcvidb/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
@@ -47,7 +49,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - migration
     environment:
       - DB_HOST=db
 volumes:
