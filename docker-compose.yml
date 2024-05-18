@@ -1,49 +1,26 @@
 version: '3'
 
-# services:
-#   web:
-#     build: .
-#     command: python manage.py runserver 0.0.0.0:8000
-#     volumes:
-#       - .:/code
-#     ports:
-#       - "8000:8000"
-#     depends_on:
-#       - db
-#   db:
-#     image: postgres
-#     ports:
-#       - "5432:5432"
-#     environment:
-#       POSTGRES_DB: "db"
-#       POSTGRES_HOST_AUTH_METHOD: "trust"
 services:
   db:
     image: postgres:15
+    platform: linux/amd64
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=default
-      - POSTGRES_NAME=postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST=localhost
-      
-  migration:
-    image: rajshekhorroy/jcvidb_web
-    command: python jcvidb/manage.py migrate --noinput
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-      - web
- 
+     
   web:
     build: .
+    platform: linux/amd64
     image: rajshekhorroy/jcvidb_web
-    command: python jcvidb/manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python /app/jcvidb/manage.py migrate &&
+      python /app/jcvidb/manage.py runserver 0.0.0.0:8000 &&
+      python /app/jcvidb/manage.py loaddata /app/jcvidb/jcvidb_app/fixtures/initial_data.json"
     volumes:
-      - .:/app
+      # - ./app:/app
+#      - /Users/rajshekhorroy/Downloads/ftp:/app/jcvidb/media
       - /home/rajroy/ftp_files:/app/jcvidb/media
     ports:
       - "8000:8000"
@@ -53,5 +30,3 @@ services:
       - DB_HOST=db
 volumes:
   postgres_data:
-
-
