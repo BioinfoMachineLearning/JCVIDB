@@ -26,12 +26,13 @@ SECRET_KEY = "django-insecure-lbnc6xdkfc9713_j+7r1mnvs@xzp!kqqsf#@vmo%=fd_c5od8a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','jcvidb.missouri.edu']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8081','http://localhost:8080'
+    'http://localhost:8081','http://localhost:8080','http://jcvidb.missouri.edu:8000'
 )
-
+CSRF_TRUSTED_ORIGINS=[ 'http://localhost:8000', 'http://127.0.0.1:8000', 'http://jcvidb.missouri.edu',
+    'https://jcvidb.missouri.edu']
 # Application definition
 
 INSTALLED_APPS = [
@@ -90,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': 'FlyingDragon',
         'HOST': os.getenv('DB_HOST', 'localhost'),   # or your PostgreSQL server's IP address
         'PORT': '5432',        # or your PostgreSQL server's port
     }
